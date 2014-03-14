@@ -11,49 +11,86 @@ CAP_RESERVED = 0x0
 CAP_GPIO     = 0x1
 CAP_ADC      = 0x2
 CAP_PWM      = 0x4
+CAP_CAIO     = 0x8
 
 """ UPER1 board pinout """
 uper1_pinout = {
-1 :  [CAP_GPIO,             [0]],
-2 :  [CAP_GPIO,             [1]],
-3 :  [CAP_GPIO | CAP_PWM,   [2,1,2]],
-4 :  [CAP_GPIO,             [3]],
-5 :  [CAP_GPIO,             [4]],
-6 :  [CAP_RESERVED],
-7 :  [CAP_RESERVED],
-8 :  [CAP_GPIO,             [5]],
-9 :  [CAP_GPIO,             [6]],
-10 : [CAP_GPIO | CAP_PWM,   [7,1,0]],
-11 : [CAP_GPIO,             [8]],
-12 : [CAP_GPIO,             [9]],
-13 : [CAP_GPIO,             [10]],
-14 : [CAP_GPIO,             [11]],
-15 : [CAP_GPIO,             [12]],
-16 : [CAP_GPIO,             [13]],
-17 : [CAP_GPIO,             [14]],
-18 : [CAP_GPIO,             [15]],
+1 :  [CAP_GPIO,             [0], 	"PIO0_20"],
+2 :  [CAP_GPIO,             [1], 	"PIO0_2"],
+3 :  [CAP_GPIO | CAP_PWM,   [2,1,2],"PIO1_26"],
+4 :  [CAP_GPIO,             [3], 	"PIO1_27"],
+5 :  [CAP_GPIO,             [4], 	"PIO1_20"],
+6 :  [CAP_RESERVED,					"PIO0_4"],
+7 :  [CAP_RESERVED,					"PIO0_5"],
+8 :  [CAP_GPIO,             [5],	"PIO0_21"],
+9 :  [CAP_GPIO,             [6],	"PIO1_23"],
+10 : [CAP_GPIO | CAP_PWM,   [7,1,0],"PIO1_24"],
+11 : [CAP_GPIO,             [8],	"PIO0_7"],
+12 : [CAP_GPIO,             [9],	"PIO1_28"],
+13 : [CAP_GPIO,             [10],	"PIO1_31"],
+14 : [CAP_GPIO,             [11],	"PIO1_21"],
+15 : [CAP_GPIO,             [12],	"PIO0_8"],
+16 : [CAP_GPIO,             [13],	"PIO0_9"],
+17 : [CAP_GPIO,             [14],	"PIO0_10"],
+18 : [CAP_GPIO,             [15],	"PIO1_29"],
 19 : [CAP_RESERVED],
 20 : [CAP_RESERVED],
 21 : [CAP_RESERVED],
 22 : [CAP_RESERVED],
-23 : [CAP_GPIO | CAP_ADC,   [33,0]],
-24 : [CAP_GPIO | CAP_ADC,   [32,1]],
-25 : [CAP_GPIO | CAP_ADC,   [31,2]],
-26 : [CAP_GPIO | CAP_ADC,   [30,3]],
-27 : [CAP_GPIO | CAP_PWM,   [29,0,0]],
-28 : [CAP_GPIO | CAP_PWM,   [28,0,1]],
-29 : [CAP_GPIO,             [27]],
-30 : [CAP_GPIO | CAP_ADC,   [26,4]],
-31 : [CAP_GPIO | CAP_ADC,   [25,5]],
-32 : [CAP_GPIO | CAP_ADC,   [24,6]],
-33 : [CAP_GPIO | CAP_ADC,   [23,7]],
-34 : [CAP_GPIO | CAP_PWM,   [22,0,2]],
-35 : [CAP_GPIO,             [21]],
-36 : [CAP_GPIO,             [20]],
-37 : [CAP_GPIO,             [19]],
-38 : [CAP_GPIO,             [18]],
-39 : [CAP_GPIO | CAP_PWM,   [17,1,1]],
-40 : [CAP_GPIO,             [16]]
+23 : [CAP_GPIO | CAP_ADC,   [33,0],	"PIO1_19"],
+24 : [CAP_GPIO | CAP_ADC,   [32,1],	"PIO1_25"],
+25 : [CAP_GPIO | CAP_ADC,   [31,2],	"PIO1_16"],
+26 : [CAP_GPIO | CAP_ADC,   [30,3],	"PIO0_19"],
+27 : [CAP_GPIO | CAP_PWM,   [29,0,0],"PIO0_18"],
+28 : [CAP_GPIO | CAP_PWM,   [28,0,1],"PIO0_17"],
+29 : [CAP_GPIO,             [27],	"PIO1_15"],
+30 : [CAP_GPIO | CAP_ADC,   [26,4],	"PIO0_23"],
+31 : [CAP_GPIO | CAP_ADC,   [25,5],	"PIO0_22"],
+32 : [CAP_GPIO | CAP_ADC,   [24,6],	"PIO0_16"],
+33 : [CAP_GPIO | CAP_ADC,   [23,7],	"PIO0_15"],
+34 : [CAP_GPIO | CAP_PWM,   [22,0,2],"PIO1_22"],
+35 : [CAP_GPIO,             [21],	"PIO1_14"],
+36 : [CAP_GPIO,             [20],	"PIO1_13"],
+37 : [CAP_GPIO,             [19],	"PIO0_14"],
+38 : [CAP_GPIO,             [18],	"PIO0_13"],
+39 : [CAP_GPIO | CAP_PWM,   [17,1,1],"PIO0_12"],
+40 : [CAP_GPIO,             [16],	"PIO0_11"]
+}
+
+""" WEIO board pinout """
+weio_pinout = {
+0 : [CAP_GPIO | CAP_PWM,   [29,0,0],"PIO0_18"],
+1 : [CAP_GPIO | CAP_ADC,   [30,3],	"PIO0_19"],
+2 : [CAP_GPIO,             [13],	"PIO0_9"],
+3 : [CAP_GPIO,             [12],	"PIO0_8"],
+4 : [CAP_GPIO,             [14],	"PIO0_10"],
+5 : [CAP_GPIO,             [1], 	"PIO0_2"],
+6 : [CAP_GPIO,             [8],		"PIO0_7"],
+7 : [CAP_GPIO | CAP_PWM,   [28,0,1],"PIO0_17"],
+8 : [CAP_GPIO,             [5],		"PIO0_21"],
+9 : [CAP_GPIO,             [11],	"PIO1_21"],
+10: [CAP_GPIO,             [4], 	"PIO1_20"],
+11: [CAP_GPIO,             [0], 	"PIO0_20"],
+12: [CAP_GPIO | CAP_ADC,   [31,2],	"PIO1_16"],
+13: [CAP_GPIO | CAP_ADC,   [33,0],	"PIO1_19"],
+14: [CAP_GPIO | CAP_PWM,   [22,0,2],"PIO1_22"],
+15: [CAP_GPIO,             [6],		"PIO1_23"],
+16: [CAP_GPIO,             [3], 	"PIO1_27"],
+17: [CAP_GPIO,             [9],		"PIO1_28"],
+18: [CAP_GPIO,             [20],	"PIO1_13"],
+19: [CAP_GPIO,             [21],	"PIO1_14"],
+20: [CAP_GPIO,             [27],	"PIO1_15"],
+21: [CAP_GPIO | CAP_PWM,   [7,1,0],	"PIO1_24"],
+22: [CAP_GPIO | CAP_ADC,   [32,1],	"PIO1_25"],
+23: [CAP_GPIO | CAP_PWM,   [2,1,2],	"PIO1_26"],
+24: [CAP_GPIO,             [16],	"PIO0_11"],
+25: [CAP_GPIO | CAP_PWM,   [17,1,1],"PIO0_12"],
+26: [CAP_GPIO,             [18],	"PIO0_13"],
+27: [CAP_GPIO,             [19],	"PIO0_14"],
+28: [CAP_GPIO | CAP_ADC,   [23,7],	"PIO0_15"],
+29: [CAP_GPIO | CAP_ADC,   [24,6],	"PIO0_16"],
+30: [CAP_GPIO | CAP_ADC,   [25,5],	"PIO0_22"],
+31: [CAP_GPIO | CAP_ADC,   [26,4],	"PIO0_23"]
 }
 
 
@@ -241,6 +278,9 @@ class UperIO:
     def get_port(self, port_class, port = 0, pins = []):
         return port_class(self, port, pins)
 
+    def reset(self):
+        self.uper_io(0, self.encode_sfp(251, []))
+
     def __enter__(self):
         return self
 
@@ -263,7 +303,7 @@ class Reader:
         while self.alive:
             try:
                 data = self.serial.read(1)            #read one, blocking
-                n = self.serial.inWaiting()            #look if there is more
+                n = self.serial.inWaiting()           #look if there is more
                 if n:
                     data = data + self.serial.read(n)    #and get as much as possible
                 if data:

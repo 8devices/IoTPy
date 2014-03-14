@@ -4,7 +4,6 @@ from struct import unpack, pack
 
 
 class Srf08:
-    ADDRESS = 0x70        # Address of the SRF08
     CMD = '\x00'            # Command byte
     LIGHT = '\x01'          # Byte to read light sensor
     RESULT = '\x02'       	# Byte for start of ranging data
@@ -14,18 +13,21 @@ class Srf08:
     CM = '\x51' 	# return distance in cm
     MS = '\x52' 	# return distance in cm
 
-    def __init__(self, interface, sensor_address=ADDRESS):
+    def __init__(self, interface, sensor_address= 0x70):
         self.interface = interface
         self.address = sensor_address
-        if sensor_address != Srf08.ADDRESS:
-            self.interface.transaction(Srf08.ADDRESS, Srf08.CMD + '\xa0' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
-            self.interface.transaction(Srf08.ADDRESS, Srf08.CMD + '\xaa' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
-            self.interface.transaction(Srf08.ADDRESS, Srf08.CMD + '\xa5' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
-            bs = pack('I', sensor_address)
-            self.interface.transaction(Srf08.ADDRESS, Srf08.CMD + bs + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
 
     def __enter__(self):
         return self
+
+    def change_address(self, address):
+        if self.address != address:
+            byte_address = pack('B', address * 2)
+            self.interface.transaction(self.address, Srf08.CMD + '\xa0' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
+            self.interface.transaction(self.address, Srf08.CMD + '\xaa' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
+            self.interface.transaction(self.address, Srf08.CMD + '\xa5' + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
+            self.interface.transaction(self.address, Srf08.CMD + byte_address + Srf08.GAIN_REGISTER + Srf08.RANGE_LOCATION, 0)
+            self.address = address
 
     def distance(self, distance_unit = CM):
         if distance_unit not in (Srf08.CM, Srf08.INCH, Srf08.MS):

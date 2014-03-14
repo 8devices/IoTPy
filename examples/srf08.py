@@ -12,9 +12,27 @@ from time import sleep
 
 try:
 	with UperIO() as u, Srf08(i2c(u)) as sensor:
-		for i in range(100):
+		for i in range(10):
 			try:
-				print "distance: %3d" % sensor.distance(Srf08.CM), "cm,",
+				print "distance: %3dcm" % sensor.distance(Srf08.CM),
+				print "light:", sensor.light()
+			except UPER_ThingError:
+				die("Distance/Light sensor reading error, exiting")
+			sleep(0.2)
+		sensor.change_address(0x74)
+		print "------------sensor address changed------------"
+		for i in range(10):
+			try:
+				print "distance: %3dcm" % sensor.distance(Srf08.CM),
+				print "light:", sensor.light()
+			except UPER_ThingError:
+				die("Distance/Light sensor reading error, exiting")
+			sleep(0.2)
+		sensor.change_address(0x70)
+		print "------------sensor address changed------------"
+		for i in range(10):
+			try:
+				print "distance: %3dcm" % sensor.distance(Srf08.CM),
 				print "light:", sensor.light()
 			except UPER_ThingError:
 				die("Distance/Light sensor reading error, exiting")

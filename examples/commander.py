@@ -23,7 +23,8 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 # Uncomment to enable debug messages
 #mqttc.on_log = on_log
-mqttc.connect("test.mosquitto.org", 1883, 60)
+#mqttc.connect("test.mosquitto.org", 1883, 60)
+mqttc.connect("192.168.101.96", 1883, 60)
 while True:
     mqttc.loop(1, 1)
     cmd = raw_input("Enter command for remote: ")

@@ -1,10 +1,20 @@
-import os, glob, urllib, urllib2, platform
+import os, glob, urllib, urllib2, time
+
 
 class Upgrader:
-	def __init__(self):
-		return
 
-	def puttoFile(self, content, file_name):
+	def __init__(self, reset_pin=22, program_pin=23, fw_file = "/tmp/latest_UPER_firmware.bin"):
+		reset_pin_str = str(reset_pin)
+		program_pin_str = str(program_pin)
+		self._gpio(reset_pin_str, "/sys/class/gpio/export")
+		self._gpio(program_pin_str, "/sys/class/gpio/export")
+		self._gpio("out","/sys/class/gpio/gpio"+reset_pin_str+"/direction")
+		self._gpio("out","/sys/class/gpio/gpio"+program_pin_str+"/direction")
+		self.uper_reset = "/sys/class/gpio/gpio"+reset_pin_str+"/value"
+		self.uper_program = "/sys/class/gpio/gpio"+program_pin_str+"/value"
+		self.fw_file = fw_file
+
+	def _gpio(self, content, file_name):
 		try:
 			file_id = os.open(file_name, os.O_WRONLY)
 			os.write(file_id, content)
@@ -12,29 +22,40 @@ class Upgrader:
 		except OSError:
 			pass
 
-	def resetUper(self):
-		self.puttoFile("1","/sys/class/gpio/gpio22/value")
-		self.puttoFile("0","/sys/class/gpio/gpio22/value")
+	def _reset_uper(self):
+		self._gpio("1",self.uper_reset)
+		self._gpio("0",self.uper_reset)
 
-	def upgradeFirmware(self, fwUrl = "https://github.com/8devices/UPER/raw/master/dist/UPER-Release.bin"):
-		acm_interface = "/dev/ttyACM0"
-		sd_devices = "/dev/sd*"
-		fw_file = "/tmp/latest_UPER_firmware.bin"
-		UPER_flash_pattern = "CRP DISABLD"
-		new_dev_list = []
+	def upgrade_firmware(self, fwUrl = "https://github.com/8devices/UPER/raw/master/dist/UPER-Release.bin"):
+		uper_flash_pattern = "CRP DISABLD"
 
-		# put UPER1 in to programming mode
-		self.puttoFile("22","/sys/class/gpio/export") # 14'th Carambola2 dev bord pin - reset on UPER
-		self.puttoFile("23","/sys/class/gpio/export") # 15'th Carambola2 dev bord pin - prog on UPER
-		self.puttoFile("out","/sys/class/gpio/gpio22/direction")
-		self.puttoFile("out","/sys/class/gpio/gpio23/direction")
-		self.puttoFile("1","/sys/class/gpio/gpio22/value")
-		self.puttoFile("1","/sys/class/gpio/gpio23/value")
-		self.puttoFile("0","/sys/class/gpio/gpio22/value")
+		if not os.path.isfile(self.fw_file):
+			# download firmware file
+			print "Will get firmware from URL:", fwUrl
+			try:
+				req = urllib2.Request(fwUrl)
+				handle = urllib2.urlopen(req)
+			except urllib2.HTTPError, e:
+				print "UPER: Can't download firmware, error code - %s." % e.code
+				self._reset_uper()
+				return
+			except urllib2.URLError:
+				print "UPER: Bad URL for firmware file: %s" % fwUrl
+				self._reset_uper()
+				return
+			else:
+				urllib.urlretrieve(fwUrl, self.fw_file + '.new')
+				if os.path.isfile(self.fw_file + '.new'):
+					os.rename(self.fw_file + '.new', self.fw_file)
+
+		# put UPER in to programming mode
+		self._gpio("1",self.uper_reset)
+		self._gpio("1",self.uper_program)
+		self._gpio("0",self.uper_reset)
 		time.sleep(2) # wait for linux to settle after UPER reboot in to pgm state
-		self.puttoFile("0","/sys/class/gpio/gpio23/value")
+		self._gpio("0",self.uper_program)
 
-		# find UPER1 block device
+		# find UPER block device
 		list_block_devs = glob.glob("/sys/block/sd*")
 		block_device_name = ''
 		header = ''
@@ -44,42 +65,21 @@ class Upgrader:
 				block_device = os.open(try_device_name, os.O_RDWR)
 				os.lseek(block_device, 3 * 512, os.SEEK_SET)
 				header = os.read(block_device,11)
+				time.sleep(0.35) # reading can be slowww
 				os.close(block_device)
 			except OSError:
-				print "neradau ant", try_device_name
 				pass
-			if header == UPER_flash_pattern: # "CRP DISABLD"
-				#found UPER
-				block_device_name = try_device_name
+			if header == uper_flash_pattern: # "CRP DISABLD"
+				block_device_name = try_device_name # found UPER
 				break;
 		if block_device_name == '':
-			print "UPER: firmware upgrade error, no UPPER board found"
+			print "UPER firmware upgrade error, no UPER was found."
 			return
 
-		# download firmware file 
-		print "Will get firmware from URL:" 
-		print fwUrl
-		
-		try:
-			req = urllib2.Request(fwUrl)
-			handle = urllib2.urlopen(req)
-		except urllib2.HTTPError, e:
-			print "UPER: Can't download firmware, error code - %s." % e.code
-			self.resetUper()
-			return
-		except urllib2.URLError:
-			print "UPER: Bad URL for firmware file: %s" % fwUrl
-			self.resetUper()
-			return
-		else:
-			urllib.urlretrieve(fwUrl, fw_file + '.new')
-			if os.path.isfile(fw_file + '.new'):
-				os.rename(fw_file + '.new', fw_file)
-
-		#os.system("dd if="+fw_file+" of="+new_dev_list[0]+" seek=4")
+			#os.system("dd if="+fw_file+" of="+new_dev_list[0]+" seek=4")
 
 		# read the fw from file	
-		fw_file_id = open(fw_file)
+		fw_file_id = open(self.fw_file)
 		firmware = fw_file_id.read()
 		fw_file_id.close()
 
@@ -89,6 +89,12 @@ class Upgrader:
 		os.close(block_device)
 
 		# reset UPER
-		self.resetUper()
-		time.sleep(2)
+		self._reset_uper()
+		time.sleep(.2)
 		return
+
+if __name__ == '__main__':
+		#for WeIO up =
+		up = Upgrader(17, 22) # GPIO17 = UPER reset, GPIO22 = UPER program
+		#up = Upgrader()- carambola2 dev board settings
+		up.upgrade_firmware()
