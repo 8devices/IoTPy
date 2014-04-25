@@ -30,9 +30,3 @@ while True:
     cmd = raw_input("Enter command for remote: ")
     mqttc.publish("8dev/cmd", cmd)
     mqttc.loop(1, 2)
-
-
-
-
-
-

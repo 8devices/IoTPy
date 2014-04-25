@@ -1,4 +1,4 @@
-from utils import UPER_APIError, errmsg
+from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 
 class GPIO:
@@ -14,7 +14,7 @@ class GPIO:
             self.logical_pin = self.board.pinout[pin][1][0]
         else:
             errmsg("UPER API: Pin No:%d is not GPIO pin.", pin)
-            raise UPER_APIError("Trying to assign GPIO function to non GPIO pin.")
+            raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
         self.direction = self.INPUT
         self.pull = self.PULL_UP
         self.board.uper_io(0, self.board.encode_sfp(1, [self.logical_pin])) # set primary
@@ -32,7 +32,7 @@ class GPIO:
             self.board.uper_io(0, self.board.encode_sfp(3, [self.logical_pin, pin_mode]))
         else:
             errmsg("UPER API: pinMode - Illegal pin mode - %d", pin_mode)
-            raise UPER_APIError("Illegal pin mode.")
+            raise IoTPy_APIError("Illegal pin mode.")
 
     def write(self, value):
         if self.direction != self.OUTPUT:

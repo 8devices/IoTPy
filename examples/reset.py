@@ -1,3 +1,3 @@
-from pyuper.uperio import UperIO
-u = UperIO()
+from IoTPy.pyuper.ioboard import IoBoard
+u = IoBoard()
 u.reset()

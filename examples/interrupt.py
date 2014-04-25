@@ -1,9 +1,10 @@
-from pyuper.uperio import UperIO
-from pyuper.interrupt import Interrupt
-from pyuper.gpio import GPIO
-from pyuper.adc import ADC
-from pyuper.utils import UPER_APIError, die, errmsg
 from time import sleep
+
+from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.interrupt import Interrupt
+from IoTPy.pyuper.gpio import GPIO
+from IoTPy.pyuper.adc import ADC
+from IoTPy.pyuper.utils import IoTPy_APIError, die, errmsg
 
 
 def call_back1():
@@ -13,7 +14,7 @@ def call_back1():
 		sleep(0.2)
 		red.write(1)
 		print adc.read()
-	except UPER_APIError, e: # don't see the UPER board
+	except IoTPy_APIError, e: # don't see the UPER board
 		details = e.args[0]
 		die(details)
 
@@ -25,14 +26,14 @@ def call_back2():
 		sleep(0.2)
 		green.write(1)
 		print adc.read()
-	except UPER_APIError, e: # don't see the UPER board
+	except IoTPy_APIError, e: # don't see the UPER board
 		details = e.args[0]
 		die(details)
 
 
 try:
-	u = UperIO()
-except UPER_APIError, e: # seems can't establish connection with the UPER board
+	u = IoBoard()
+except IoTPy_APIError, e: # seems can't establish connection with the UPER board
 	details = e.args[0]
 	die(details)
 
@@ -59,7 +60,7 @@ try:
 	for i in range(60):
 		u.get_device_info()
 		sleep(1)
-except UPER_APIError, e: # don't see the UPER board
+except IoTPy_APIError, e: # don't see the UPER board
 	details = e.args[0]
 	die(details)
 except KeyboardInterrupt:

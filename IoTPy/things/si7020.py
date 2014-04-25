@@ -1,5 +1,7 @@
-from pyuper.utils import UPER_ThingError
 from struct import unpack
+
+from IoTPy.pyuper.utils import IoTPy_ThingError
+
 
 class Si7020:
     ADDRESS = 0x40             # Address of the si7020
@@ -27,8 +29,8 @@ class Si7020:
             result_raw = self.interface.transaction(Si7020.ADDRESS, '', 2)
             result_integer = unpack('>H', result_raw[:2])[0]
             temp = (175.72 * result_integer)/65536 - 46.85
-        except UPER_ThingError:
-            raise UPER_ThingError("Si7020 - temperature reading error.")
+        except IoTPy_ThingError:
+            raise IoTPy_ThingError("Si7020 - temperature reading error.")
         return temp
 
     def humidity(self):
@@ -37,8 +39,8 @@ class Si7020:
             result_raw = self.interface.transaction(Si7020.ADDRESS, '', 2)
             result_integer = unpack('>H', result_raw[:2])[0]
             rh = (125.0 * result_integer)/65536 - 6
-        except UPER_ThingError:
-            raise UPER_ThingError("Si7020 - humidity reading error.")
+        except IoTPy_ThingError:
+            raise IoTPy_ThingError("Si7020 - humidity reading error.")
         return rh
 
     def __exit__(self, ex_type, ex_value, traceback):

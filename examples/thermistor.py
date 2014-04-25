@@ -1,7 +1,9 @@
-from pyuper.uperio import UperIO
-from pyuper.adc import ADC
 from time import sleep
-from pyuper.utils import UPER_APIError, UPER_IOError, die
+
+from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.adc import ADC
+from IoTPy.pyuper.utils import IoTPy_APIError, IoTPy_IOError, die
+
 
 adc_to_temperature = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26,
           27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
@@ -49,14 +51,14 @@ adc_to_temperature = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 pin = 23
 
 try:
-    with UperIO() as u, u.get_pin(ADC, pin) as thermistor_pin:
+    with IoBoard() as u, u.get_pin(ADC, pin) as thermistor_pin:
         for i in range(100):
             adc_val = thermistor_pin.read()
             temp = adc_to_temperature[adc_val - 238]
             print adc_val, temp/20.0, "degC"
             sleep(0.5)
 
-except (UPER_IOError, UPER_APIError), e: # don't see the UPER
+except (IoTPy_IOError, IoTPy_APIError), e: # don't see the UPER
     details = e.args[0]
     die(details)
 except KeyboardInterrupt:

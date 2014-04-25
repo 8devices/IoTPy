@@ -1,6 +1,7 @@
-from pyuper.utils import UPER_ThingError, errmsg
 from time import sleep
 from struct import unpack, pack
+
+from IoTPy.pyuper.utils import IoTPy_ThingError, errmsg
 
 
 class Srf08:
@@ -32,13 +33,13 @@ class Srf08:
     def distance(self, distance_unit = CM):
         if distance_unit not in (Srf08.CM, Srf08.INCH, Srf08.MS):
             errmsg("Wrong units for distance, should be 'c' or 'i' or 'm'.")
-            raise UPER_ThingError("Wrong units for distance, should be 'c' or 'i' or 'm'.")
+            raise IoTPy_ThingError("Wrong units for distance, should be 'c' or 'i' or 'm'.")
         try:
             self.interface.transaction(self.address, Srf08.CMD + distance_unit, 0)
             sleep(0.08)
             distance = unpack('>H', self.interface.transaction(self.address, Srf08.RESULT, 2)[:2])[0]
-        except UPER_ThingError:
-            raise UPER_ThingError("srf08 - distance reading error.")
+        except IoTPy_ThingError:
+            raise IoTPy_ThingError("srf08 - distance reading error.")
         return distance
 
     def light(self):
@@ -46,8 +47,8 @@ class Srf08:
             self.interface.transaction(self.address, Srf08.CMD + Srf08.CM, 0)
             sleep(0.08)
             light = unpack('>B', self.interface.transaction(self.address, Srf08.LIGHT, 1)[:1])[0]
-        except UPER_ThingError:
-            raise UPER_ThingError("srf08 - distance reading error.")
+        except IoTPy_ThingError:
+            raise IoTPy_ThingError("srf08 - distance reading error.")
         return light
 
     def get_revision(self):

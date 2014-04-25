@@ -1,4 +1,4 @@
-from utils import UPER_APIError, errmsg
+from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 
 PWM_PORT_RUNNING = [[0,0], [0,0]]
@@ -13,7 +13,7 @@ class PWM:
             self.logical_pin = self.board.pinout[pin][1][0]
         else:
             errmsg("UPER API: Pin No:%d is not a PWM pin.", pin)
-            raise UPER_APIError("Trying to assign PWM function to non PWM pin.")
+            raise IoTPy_APIError("Trying to assign PWM function to non PWM pin.")
         self.pwm_port = self.board.pinout[pin][1][1]
         self.pwm_pin = self.board.pinout[pin][1][2]
         self.primary = True
@@ -30,7 +30,7 @@ class PWM:
                 PWM_PORT_RUNNING[self.pwm_port][1] = period
         else:
             errmsg("UPER API: PWM period for port %d can be only between 0-%d" % (self.pwm_port, self.PWM_PORT_MAX[self.pwm_port]))
-            raise UPER_APIError("PWM period is out of range.")
+            raise IoTPy_APIError("PWM period is out of range.")
 
     def width_us(self, hightime):
         if self.primary:
@@ -43,7 +43,7 @@ class PWM:
             self.board.uper_io(0, self.board.encode_sfp(PWM.PWM_PORT_FUNCTIONS[self.pwm_port][1], [self.pwm_pin, hightime]))
         else:
             errmsg("UPER error: PWM high time is out of range on logical pin %d." % self.logical_pin)
-            raise UPER_APIError("PWM high time is out of range.")
+            raise IoTPy_APIError("PWM high time is out of range.")
 
     def write(self, duty):
         self.width_us(int((self.PWM_PERIOD)*float(duty)))

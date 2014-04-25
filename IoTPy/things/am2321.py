@@ -1,6 +1,7 @@
-from pyuper.utils import UPER_ThingError
 from time import sleep
 from struct import unpack
+
+from IoTPy.pyuper.utils import IoTPy_ThingError
 
 
 I2C_ADDR_AM2321 = 0x5c # 0xB8 >> 1
@@ -32,7 +33,7 @@ class AM2321:
         buf = self.interface.transaction(self.address, '', regcount + 4)
         crc = unpack('<H', buf[-2:])[0]
         if crc != self._am_crc16(buf[:-2]):
-            raise UPER_ThingError("AM2321 reading CRC error.")
+            raise IoTPy_ThingError("AM2321 reading CRC error.")
         return buf[2:-2]
 
     def _am_crc16(self, buf):

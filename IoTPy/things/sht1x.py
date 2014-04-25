@@ -1,8 +1,10 @@
 from time import sleep
+
 from pyuper.gpio import GPIO
 from pyuper.i2c import i2c
-from pyuper.uperio import UperIO
-from things.si7020 import Si7020
+from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.things.si7020 import Si7020
+
 
 LOW = 0
 HIGH =1
@@ -120,7 +122,7 @@ class SHT1X:
         return((self.temperature() - 25.0 ) * (T1 + T2 * val) + linear_humidity)
 
 if __name__ == '__main__':
-    with UperIO() as u, u.get_pin(GPIO, 1) as pin1, u.get_pin(GPIO, 2) as pin2, SHT1X(pin1, pin2) as sensor, i2c(u) as myi2c, Si7020(myi2c) as other_sensor:
+    with IoBoard() as u, u.get_pin(GPIO, 1) as pin1, u.get_pin(GPIO, 2) as pin2, SHT1X(pin1, pin2) as sensor, i2c(u) as myi2c, Si7020(myi2c) as other_sensor:
         """
         print "Temperature RAW = ", readTemperatureRaw()
         """

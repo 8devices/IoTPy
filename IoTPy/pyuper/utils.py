@@ -1,13 +1,13 @@
 import sys, os
 
 
-class UPER_APIError(Exception):
+class IoTPy_APIError(Exception):
     pass
 
-class UPER_IOError(Exception):
+class IoTPy_IOError(Exception):
     pass
 
-class UPER_ThingError(Exception):
+class IoTPy_ThingError(Exception):
     pass
 
 def errmsg(fmt, *args):
