@@ -29,15 +29,22 @@ with u.get_pin(PWM, 27) as R, u.get_pin(PWM, 28) as G, u.get_pin(PWM, 34) as B:
     R.write(0.9)
     print "Red LED duty is:", R.read()
     sleep(0.5)
-
-    for color in range(500):
-        rgb = hls_to_rgb(color*0.002, 0.1, 1)
-        R.write(rgb[0])
-        G.write(rgb[1])
-        B.write(rgb[2])
-        print "R:", R.read(), "G:", G.read(), "B:", B.read()
-        sleep(0.01)
-
-    R.width_us(0)
-    G.width_us(0)
-    B.width_us(0)
+    i = 0
+    try:
+        while True:
+            for color in range(500):
+                rgb = hls_to_rgb(color*0.002, 0.1, 1)
+                R.write(rgb[0])
+                G.write(rgb[1])
+                B.write(rgb[2])
+                i += 1
+                if not (i % 1000):
+                    print i
+                #print "R:", R.read(), "G:", G.read(), "B:", B.read()
+                #sleep(0.0005)
+    except KeyboardInterrupt:
+            R.width_us(0)
+            G.width_us(0)
+            B.width_us(0)
+            u.stop()
+            die("Keyboard interrupt.")

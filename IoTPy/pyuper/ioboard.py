@@ -150,13 +150,14 @@ class IoBoard:
         if not ser:
             raise IoTPy_APIError("No UPER found on USB/serial ports.")
 
+        self.interrupts = [None] * 8
+        self.callbackdict = {}
+
         self.ser = ser
         self.ser.flush()
         self.outq = Queue.Queue()
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, self.decode_sfp)
-
-        self.interrupts = [None] * 8
-        self.callbackdict = {}
+        #self.reader = Reader(self.ser, self.outq, self.callbackdict, self.decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
@@ -255,9 +256,9 @@ class IoBoard:
                 raise IoTPy_APIError("Nothing to read on serial port exception.")
         return data
 
-    def internalCallBack(self, intdata):
+    def internalCallBack(self, interrupt_data):
         try:
-            self.callbackdict[self.interrupts[intdata[0]]][1]()
+            self.callbackdict[self.interrupts[interrupt_data[0]]][1](interrupt_data)
         except:
             raise IoTPy_APIError("UPER API: internal call back problem.")
         return
@@ -294,6 +295,11 @@ class IoBoard:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
+
+    """
+    def __del__(self):
+        self.stop()
+    """
 
 
 class Reader:

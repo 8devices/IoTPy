@@ -16,7 +16,7 @@ class Interrupt:
             errmsg("UPER API: Pin No:%d is not GPIO pin, can't attach interrupt.", pin)
             raise IoTPy_APIError("Wrong Pin number.")
 
-    def attach(self, mode, callback):
+    def attach(self, mode, callback, debounce_time=50):
         try:
             interruptID = self.board.interrupts.index(self.logical_pin)
             self.board.uper_io(0, self.board.encode_sfp(7, [interruptID])) 	#detach interrupt
@@ -28,7 +28,7 @@ class Interrupt:
                 errmsg("UPER API: more than 8 interrupts requested")
                 raise IoTPy_APIError("Too many interrupts.")
         self.board.callbackdict[self.logical_pin] = [mode, callback]
-        self.board.uper_io(0, self.board.encode_sfp(6, [interruptID, self.logical_pin, mode]))
+        self.board.uper_io(0, self.board.encode_sfp(6, [interruptID, self.logical_pin, mode, debounce_time]))
         return True
 
     def detach(self):

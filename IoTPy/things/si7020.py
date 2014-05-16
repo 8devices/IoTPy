@@ -1,5 +1,4 @@
 from struct import unpack
-
 from IoTPy.pyuper.utils import IoTPy_ThingError
 
 

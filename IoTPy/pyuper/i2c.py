@@ -13,6 +13,18 @@ class I2C:
     def __enter__(self):
         return self
 
+    def scan(self):
+        dev_list = []
+        for address in xrange(1,128):
+            try:
+                result = self.board.uper_io(1, self.board.encode_sfp(41, [address, '', 0]))
+                if result[-1] == 'X':
+                    dev_list.append(address)
+            except IoTPy_APIError:
+                errmsg("UPER API: I2C bus not connected.")
+                raise IoTPy_IOError("I2C bus not connected.")
+        return dev_list
+
     def transaction(self, address, write_data, read_length, ignore_error=False):
         try:
             result = self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(41, [address, write_data, read_length])))
@@ -20,7 +32,7 @@ class I2C:
             errmsg("UPER API: I2C bus not connected.")
             raise IoTPy_IOError("I2C bus not connected.")
         if type(result[1][0]) == IntType and not ignore_error:
-            errmsg("UPER Interface: I2C device with address %#x returned error code %#x.", address, result[1][0] )
+            errmsg("UPER Interface: I2C device with address %#x returned error code %#x.", address, result[1][0])
             raise IoTPy_ThingError("I2C slave reading error.")
         else:
             return result[1][0]
