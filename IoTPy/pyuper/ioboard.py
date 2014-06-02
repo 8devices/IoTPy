@@ -308,10 +308,30 @@ class Reader:
         self.outq = outq
         self.callback = callback
         self.alive = True
+
+        self.irq_available = threading.Condition()
+        self.irq_requests = list()
+
+        self.thread_irq = threading.Thread(target=self.interrupt_handler)
+        self.thread_irq.start()
+
         self.thread_read = threading.Thread(target=self.reader)
         self.thread_read.setDaemon(1)
         self.thread_read.start()
         self.decodefun = decodefun
+
+    def interrupt_handler(self):
+        with self.irq_available:
+            while self.alive:
+                self.irq_available.wait(0.05)
+                while len(self.irq_requests):
+                    interrupt = self.irq_requests.pop(0)
+                    try:
+                        self.callback(interrupt[1])
+                    except:
+                        errmsg("UPER API: Interrupt callback error")
+
+        self.alive = False
 
     def reader(self):
         while self.alive:
@@ -323,8 +343,9 @@ class Reader:
                 if data:
                     if data[3] == '\x08':
                         interrupt = self.decodefun(data)
-                        callbackthread = threading.Thread(target=self.callback, args=[interrupt[1]])
-                        callbackthread.start()
+                        with self.irq_available:
+                            self.irq_requests.append(interrupt)
+                            self.irq_available.notify()
                     else:
                         self.outq.put(data)
             except:
@@ -336,4 +357,5 @@ class Reader:
     def stop(self):
         if self.alive:
             self.alive = False
+            self.thread_irq.join()
             self.thread_read.join()
