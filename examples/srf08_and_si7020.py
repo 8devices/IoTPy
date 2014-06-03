@@ -17,7 +17,7 @@ die_on_error = False # if True, we will exit on sensor read error
 
 try:
     with IoBoard() as u, I2C(u) as myi2c, Si7020(myi2c) as sensor1, Srf08(myi2c) as sensor2:
-        for i in range(600):
+        for i in xrange(600):
             print"-----------------------------------------------",i
             try:
                 temp = "t = %4.2fC " % sensor1.temperature()

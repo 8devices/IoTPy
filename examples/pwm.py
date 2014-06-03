@@ -32,7 +32,7 @@ with u.get_pin(PWM, 27) as R, u.get_pin(PWM, 28) as G, u.get_pin(PWM, 34) as B:
     i = 0
     try:
         while True:
-            for color in range(500):
+            for color in xrange(500):
                 rgb = hls_to_rgb(color*0.002, 0.1, 1)
                 R.write(rgb[0])
                 G.write(rgb[1])

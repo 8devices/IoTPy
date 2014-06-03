@@ -13,7 +13,7 @@ except IoTPy_APIError, e: # seems can't establish connection with the UPER board
 	die(details)
 
 with Si7020(I2C(u)) as sensor:
-	for i in range(100):
+	for i in xrange(100):
 		try:
 			print "t = %4.2fC " % sensor.temperature(),
 			print "RH= %4.2f%%" % sensor.humidity()

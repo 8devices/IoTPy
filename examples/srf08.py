@@ -13,7 +13,7 @@ from IoTPy.things.srf08 import Srf08
 
 try:
     with IoBoard() as u, Srf08(I2C(u)) as sensor:
-        for i in range(10):
+        for i in xrange(10):
             try:
                 print "distance: %3dcm" % sensor.distance(Srf08.CM),
                 print "light:", sensor.light()
@@ -22,7 +22,7 @@ try:
             sleep(0.2)
         sensor.change_address(0x74)
         print "------------sensor address changed------------"
-        for i in range(10):
+        for i in xrange(10):
             try:
                 print "distance: %3dcm" % sensor.distance(Srf08.CM),
                 print "light:", sensor.light()
@@ -31,7 +31,7 @@ try:
             sleep(0.2)
         sensor.change_address(0x70)
         print "------------sensor address changed------------"
-        for i in range(10):
+        for i in xrange(10):
             try:
                 print "distance: %3dcm" % sensor.distance(Srf08.CM),
                 print "light:", sensor.light()

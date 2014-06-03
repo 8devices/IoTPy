@@ -19,7 +19,7 @@ except IoTPy_APIError, e: # got an exception, pin capabilities must be different
     print details
 
 with u.get_pin(ADC, 23) as adc_pin:
-    for i in range(10):
+    for i in xrange(10):
         val = adc_pin.read()
         print "RAW ADC value:", val,
         voltage = 5.0/1024 * val

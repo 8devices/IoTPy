@@ -58,7 +58,7 @@ class Stepper:
 
     def step(self, steps):
         nSteps = abs(steps)
-        for s in range(0,nSteps):
+        for s in xrange(0,nSteps):
             if (self.stepperMode==FULL_STEP):
                 phase = s%4
                 if (steps>0):

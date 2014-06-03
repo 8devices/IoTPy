@@ -52,7 +52,7 @@ pin = 23
 
 try:
     with IoBoard() as u, u.get_pin(ADC, pin) as thermistor_pin:
-        for i in range(100):
+        for i in xrange(100):
             adc_val = thermistor_pin.read()
             temp = adc_to_temperature[adc_val - 238]
             print adc_val, temp/20.0, "degC"

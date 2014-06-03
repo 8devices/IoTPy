@@ -115,7 +115,7 @@ class IoBoard:
             my_platform = platform.system()
             if my_platform == "Windows":
                 ports_list = []
-                for i in range(256):
+                for i in xrange(256):
                     try:
                         ser = serial.Serial(i)
                         ports_list.append('COM' + str(i + 1))

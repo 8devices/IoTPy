@@ -9,7 +9,7 @@ except IoTPy_APIError, e: # seems can't establish connection with the UPER board
 	die(details)
 
 interface = I2C(u)
-for address in range(0,128):
+for address in xrange(0,128):
     print address
     try:
         interface.transaction(address, '', 0)

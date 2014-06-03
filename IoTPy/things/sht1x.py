@@ -29,7 +29,7 @@ class SHT1X:
         pass
 
     def _shift_out(self, bit_order, byte, bits):
-        for i in range(bits):
+        for i in xrange(bits):
             if bit_order == LSBFIRST:
                 self.data_pin.write(byte & (1 << i))
             else:
@@ -60,7 +60,7 @@ class SHT1X:
 
     def _shift_in(self, bits):
         ret = 0
-        for i in range(bits):
+        for i in xrange(bits):
             self.clk_pin.write(HIGH)
             sleep(0.01)
             ret = ret * 2 + self.data_pin.read()
@@ -68,7 +68,7 @@ class SHT1X:
         return ret
 
     def _wait_sht(self):
-        for i in range(100):
+        for i in xrange(100):
             sleep(0.002)
             ack = self.data_pin.read()
             if ack == LOW:

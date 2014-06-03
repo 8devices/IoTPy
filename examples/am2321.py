@@ -8,7 +8,7 @@ from IoTPy.things.am2321 import AM2321
 
 with IoBoard() as u, AM2321(I2C(u)) as sensor, Si7020(I2C(u)) as other_sensor:
     print "UID", hex(sensor.read_uid())
-    for i in range(10):
+    for i in xrange(10):
         try:
             print "----------------------------------"
             print "Si7020 t = %4.2fC RH= %4.2f%%" % (other_sensor.temperature(), other_sensor.humidity())

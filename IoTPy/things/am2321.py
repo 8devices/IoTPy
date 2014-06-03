@@ -40,7 +40,7 @@ class AM2321:
         crc = 0xFFFF
         for c in buf:
             crc ^= ord(c)
-            for i in range(8):
+            for i in xrange(8):
                 if crc & 0x01:
                     crc >>= 1
                     crc ^= 0xA001
