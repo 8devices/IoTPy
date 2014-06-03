@@ -1,11 +1,5 @@
 from time import sleep
 
-from pyuper.gpio import GPIO
-from pyuper.i2c import i2c
-from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.things.si7020 import Si7020
-
-
 LOW = 0
 HIGH =1
 LSBFIRST = 1
@@ -120,14 +114,3 @@ class SHT1X:
         self._skip_crc()
         linear_humidity = C1 + C2 * val + C3 * val * val
         return((self.temperature() - 25.0 ) * (T1 + T2 * val) + linear_humidity)
-
-if __name__ == '__main__':
-    with IoBoard() as u, u.get_pin(GPIO, 1) as pin1, u.get_pin(GPIO, 2) as pin2, SHT1X(pin1, pin2) as sensor, i2c(u) as myi2c, Si7020(myi2c) as other_sensor:
-        """
-        print "Temperature RAW = ", readTemperatureRaw()
-        """
-        while 1:
-            print "----------------------------------"
-            print "Si7020 t = %4.2fC RH= %4.2f%%" % (other_sensor.temperature(), other_sensor.humidity())
-            print "SHT11  t = %4.2fC RH= %4.2f%%" % (sensor.temperature(), sensor.humidity())
-            sleep(0.5)

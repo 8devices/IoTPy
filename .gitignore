@@ -219,3 +219,8 @@ pip-log.txt
 ##################
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+
+###########
+## Sphinx
+###########
+docs/_*
