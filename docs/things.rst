@@ -15,7 +15,7 @@ Things Reference
     :undoc-members:
     :show-inheritance:
 
-:mod:`sht1x sensor`
+:mod:`SHT1x sensor`
 -------------------
 .. automodule:: IoTPy.things.sht1x
     :members:

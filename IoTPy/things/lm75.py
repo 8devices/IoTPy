@@ -3,9 +3,16 @@ from IoTPy.pyuper.utils import IoTPy_ThingError
 
 
 class Lm75:
-    ADDRESS = 0x48            # Address of the LM75
+    """
+    Lm75 temperature sensor class.
 
-    def __init__(self, interface, address=ADDRESS):
+    :param interface:  I2C communication interface.
+    :type interface: :class:`IoTPy.pyuper.i2c.I2C`
+    :param sensor_address: Lm75 sensor I2C address. Optional, default 0x48 (72).
+    :type sensor_address: int
+    """
+
+    def __init__(self, interface, address=0x48):
         self.interface = interface
         self.address = address
 
@@ -13,6 +20,13 @@ class Lm75:
         return self
 
     def temperature(self):
+        """
+        Read and return temperature.
+
+        :return: Temperature in celsius.
+        :rtype: int
+        :raise: IoTPy_ThingError
+        """
         try:
             result_raw = self.interface.transaction(self.address, '\x00', 2)
             result_integer = unpack('>H', result_raw)[0]

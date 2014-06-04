@@ -3,6 +3,13 @@ from IoTPy.pyuper.utils import IoTPy_ThingError
 
 
 class Si7020:
+    """
+    Si7020 humidity and temperature sensor class.
+
+    :param interface:  I2C communication interface.
+    :type interface: :class:`IoTPy.pyuper.i2c.I2C`
+    """
+
     ADDRESS = 0x40             # Address of the si7020
     RH_HOLD = '\xe5'           # RH hold master mode
     RH_NOHOLD = '\xf5'         # RH no hold master mode
@@ -23,6 +30,13 @@ class Si7020:
         return self
 
     def temperature(self):
+        """
+        Read, convert and return temperature.
+
+        :return: Temperature value in celsius.
+        :rtype: int
+        :raise: IoTPy_ThingError
+        """
         try:
             self.interface.transaction(Si7020.ADDRESS, Si7020.TEMP_HOLD, 0)
             result_raw = self.interface.transaction(Si7020.ADDRESS, '', 2)
@@ -33,6 +47,13 @@ class Si7020:
         return temp
 
     def humidity(self):
+        """
+        Read, convert and return humidity.
+
+        :return: Humidity value in percent.
+        :rtype: int
+        :raise: IoTPy_ThingError
+        """
         try:
             self.interface.transaction(Si7020.ADDRESS, Si7020.RH_HOLD, 0)
             result_raw = self.interface.transaction(Si7020.ADDRESS, '', 2)

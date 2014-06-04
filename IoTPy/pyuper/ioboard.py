@@ -15,14 +15,13 @@ import serial
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
 
 
-""" Pin capabilities """
 CAP_RESERVED = 0x0
 CAP_GPIO     = 0x1
 CAP_ADC      = 0x2
 CAP_PWM      = 0x4
 CAP_SPI      = 0x8
 
-""" UPER1 board pinout """
+
 uper1_pinout = {
 1:  [CAP_GPIO,             [0],         "PIO0_20"],
 2:  [CAP_GPIO,             [1],         "PIO0_2"],
@@ -65,8 +64,9 @@ uper1_pinout = {
 39: [CAP_GPIO | CAP_PWM,   [17,1,1],    "PIO0_12"],
 40: [CAP_GPIO,             [16],        "PIO0_11"]
 }
+""" UPER1 board pinout """
 
-""" WEIO board pinout """
+
 weio_pinout = {
 0 : [CAP_GPIO,             [20],        "PIO1_13"],
 1 : [CAP_GPIO,             [19],        "PIO0_14"],
@@ -101,9 +101,18 @@ weio_pinout = {
 30: [CAP_GPIO | CAP_ADC,   [24,6],      "PIO0_16"],
 31: [CAP_GPIO | CAP_ADC,   [23,7],      "PIO0_15"]
 }
+""" WEIO board pinout """
 
 class IoBoard:
-    """ low level IO """
+    """
+    Uper type board class.
+
+    :param pinout: A list describing physical board pin layout and capabilities. Optional, default is Uper1 board pinout.
+    :type pinout: list
+    :param serial_port: Name of SFP command serial communications port.
+    :type serial_port: str
+    """
+
     cap_reserved = CAP_RESERVED
     cap_gpio = CAP_GPIO
     cap_adc = CAP_ADC
@@ -164,9 +173,19 @@ class IoBoard:
         self.pinout = pinout
 
     def get_info(self):
+        """
+        Get IoBoard device name and version info.
+
+        :return: Tuple containing board name and version.
+        """
         return self.devicename, self.version
 
     def stop(self):
+        """
+        Stop all communications with the board and close serial communication port.
+
+        :raise: IoTPy_APIError
+        """
 
         #for i in range(7):
         #    self.detachInterrupt(i)
@@ -177,13 +196,13 @@ class IoBoard:
         except:
             raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
 
-    def encode_int(self, intarg):
+    def _encode_int(self, intarg):
         if intarg < 64:
             return (chr(intarg))
         packedint = struct.pack('>I', intarg).lstrip('\x00')
         return (chr(0xc0 | (len(packedint) - 1)) + packedint)
 
-    def encode_bytes(self, bytestr):
+    def _encode_bytes(self, bytestr):
         if len(bytestr) < 64:
             return (chr(0x40 | len(bytestr)) + bytestr)
         packedlen = struct.pack('>I', len(bytestr)).lstrip('\x00')
@@ -195,12 +214,29 @@ class IoBoard:
             raise IoTPy_APIError("UPER API: - too long string passed to UPER, encode_bytes can't handle it.")
 
     def encode_sfp(self, command, args):
-        functions = {types.StringType: self.encode_bytes, types.IntType: self.encode_int}
+        """
+        Construct binary SFP command.
+
+        :param command: SFP command ID.
+        :type command: int
+        :param args: A list of SFP arguments, which can be either an integer or a byte collection (string).
+        :type args: list
+        :return: Binary SFP command.
+        :rtype: str
+        """
+        functions = {types.StringType: self._encode_bytes, types.IntType: self._encode_int}
         sfp_command = chr(command) + ''.join(functions[type(arg)](arg) for arg in args)
         sfp_command = '\xd4' + struct.pack('>H', len(sfp_command)) + sfp_command
         return sfp_command
 
     def decode_sfp(self, buffer):
+        """
+        Decode SFP command from byte buffer.
+
+        :param buffer: A byte buffer which stores SFP command.
+        :type buffer: str
+        :return: A list containing decoded SFP function ID and arguments (if any).
+        """
         result = []
         if buffer[0:1] != '\xd4':
             return result
@@ -244,6 +280,12 @@ class IoBoard:
         return result
 
     def uper_io(self, ret, output_buf):
+        """
+
+        :param ret:
+        :param output_buf:
+        :return:
+        """
         try:
             self.ser.write(output_buf)
         except:
@@ -257,6 +299,11 @@ class IoBoard:
         return data
 
     def internalCallBack(self, interrupt_data):
+        """
+
+        :param interrupt_data:
+        :return:
+        """
         try:
             self.callbackdict[self.interrupts[interrupt_data[0]]][1](interrupt_data)
         except:
@@ -264,6 +311,11 @@ class IoBoard:
         return
 
     def get_device_info(self):
+        """
+        Return information about the device.
+
+        :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
+        """
         device_info = []
         result = self.decode_sfp(self.uper_io(1, self.encode_sfp(255, [])))
         if result[0] != -1:
@@ -288,6 +340,9 @@ class IoBoard:
         return port_class(self, port, pins)
 
     def reset(self):
+        """
+        Perform software restart.
+        """
         self.uper_io(0, self.encode_sfp(251, []))
 
     def __enter__(self):
@@ -295,11 +350,6 @@ class IoBoard:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
-
-    """
-    def __del__(self):
-        self.stop()
-    """
 
 
 class Reader:

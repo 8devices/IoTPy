@@ -11,6 +11,14 @@ TempCmd  = 0x03
 
 
 class SHT1X:
+    """
+    SHT10, SHT11 and SHT15 humidity and temperature sensor class.
+
+    :param data_pin: GPIO pin connected to DATA line.
+    :type data_pin: :class:`IoTPy.pyuper.gpio.GPIO`
+    :param clk_pin: GPIO pin connected to SCK line.
+    :type clk_pin: :class:`IoTPy.pyuper.gpio.GPIO`
+    """
 
     def __init__(self, data_pin, clk_pin):
         self.data_pin = data_pin
@@ -92,9 +100,22 @@ class SHT1X:
         return val
 
     def temperature(self):
+        """
+        Measure and return temperature.
+
+        :return: A measured temperature in celsius.
+        :rtype: int
+        """
         return (self._temperature_raw() * 0.01) - 40.1
 
     def humidity(self):
+        """
+        Measure and return humidity.
+
+        :return: A measured humidity value in percents.
+        :rtype: int
+        """
+
         """
         C1 = -4.0       # for 12 Bit
         C2 =  0.0405    # for 12 Bit
