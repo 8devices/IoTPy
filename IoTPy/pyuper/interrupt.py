@@ -2,6 +2,15 @@ from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 
 class Interrupt:
+    """
+    GPIO interrupt pin module.
+
+    :param board: IoBoard to which the pin belongs to.
+    :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`
+    :param pin: GPIO pin number.
+    :type pin: int
+    """
+
     LEVEL_LOW = 0
     LEVEL_HIGH = 1
     EDGE_CHANGE = 2
@@ -17,6 +26,17 @@ class Interrupt:
             raise IoTPy_APIError("Wrong Pin number.")
 
     def attach(self, mode, callback, debounce_time=50):
+        """
+        Attach (enable) or reconfigure GPIO interrupt event.
+
+        :param mode: GPIO interrupt mode.
+        :param callback: User callback function. This function is executed when the interrupt event is received.
+        :param debounce_time: Interrupt disable time in milliseconds after the triggering event. This is used to "debounce" buttons or \
+        to protect communication channel from data flood. Optional, default is 50ms.
+
+        :return: True
+        :raise: IoTPy_APIError
+        """
         try:
             interruptID = self.board.interrupts.index(self.logical_pin)
             self.board.uper_io(0, self.board.encode_sfp(7, [interruptID])) 	#detach interrupt
@@ -32,6 +52,13 @@ class Interrupt:
         return True
 
     def detach(self):
+        """
+        Detach (disable) GPIO interrupt.
+
+        :return: True
+        :raise: IoTPy_APIError
+        """
+
         try:
             interruptID = self.board.interrupts.index(self.logical_pin)
         except ValueError:

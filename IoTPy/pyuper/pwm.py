@@ -3,6 +3,17 @@ from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 
 PWM_PORT_RUNNING = [[0,0], [0,0]]
 class PWM:
+    """
+    PWM (Pulse Width Modulation) pin module.
+
+    :param board: IoBoard to which the pin belongs to.
+    :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`
+    :param pin: PWM pin number.
+    :type pin: int
+    :param polarity: Active (on) state signal level: 0 (LOW) or 1 (HIGH). Optional, default 1.
+    :type polarity: int
+    """
+
     PWM_PORT_FUNCTIONS = [[50,51,52],[60,61,62]]
     PWM_PERIOD = 10000
     PWM_PORT_MAX = [0xffff, 0xffffffff]      #maxuint16, maxuint32
@@ -24,6 +35,13 @@ class PWM:
             self.period(self.PWM_PERIOD)
 
     def period(self, period):
+        """
+        Set PWM period.
+
+        :param period: PWM signal period in microseconds.
+        :type period: int
+        :raise: IoTPy_APIError
+        """
         if 0 <= period <= self.PWM_PORT_MAX[self.pwm_port]:
             if PWM_PORT_RUNNING[self.pwm_port][1] != period:
                 self.board.uper_io(0, self.board.encode_sfp(self.PWM_PORT_FUNCTIONS[self.pwm_port][0], [period]))
@@ -33,6 +51,13 @@ class PWM:
             raise IoTPy_APIError("PWM period is out of range.")
 
     def width_us(self, hightime):
+        """
+        Set PWM high (on state) time.
+
+        :param hightime: On state time in microseconds.
+        :type hightime: int
+        :raise: IoTPy_APIError
+        """
         if self.primary:
             self.board.uper_io(0, self.board.encode_sfp(2, [self.logical_pin])) # set pin secondary function
             self.primary = False
@@ -46,9 +71,20 @@ class PWM:
             raise IoTPy_APIError("PWM high time is out of range.")
 
     def write(self, duty):
+        """
+        Set PWM duty cycle.
+
+        :param duty: PWM duty cycle in fractions: 1.0 is 100%, 0.5 is 50%, etc.
+        :type duty: float
+        """
         self.width_us(int((self.PWM_PERIOD)*float(duty)))
 
     def read(self):
+        """
+        Get PWM duty cycle.
+
+        :return: PWM duty cycle.
+        """
         return float(self.hightime) / PWM_PORT_RUNNING[self.pwm_port][1]
 
     def __exit__(self, exc_type, exc_value, traceback):
