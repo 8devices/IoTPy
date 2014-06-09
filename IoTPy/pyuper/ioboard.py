@@ -119,6 +119,7 @@ class IoBoard:
     cap_pwm = CAP_PWM
 
     def __init__(self, pinout=uper1_pinout, serial_port=None):
+        """__init__(self, pinout=uper1_pinout, serial_port=None)"""
         ser = None
         if serial_port is None:
             my_platform = platform.system()
