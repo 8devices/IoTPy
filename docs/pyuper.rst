@@ -49,3 +49,10 @@ PyUper Reference
     :members:
     :undoc-members:
     :show-inheritance:
+	
+:mod:`Pinouts`
+--------------
+.. automodule:: IoTPy.pyuper.pinouts
+    :members:
+    :undoc-members:
+    :show-inheritance:

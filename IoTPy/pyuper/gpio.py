@@ -1,5 +1,5 @@
 from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
-
+from IoTPy.pyuper.pinouts import CAP_GPIO
 
 class GPIO:
     """
@@ -20,8 +20,8 @@ class GPIO:
 
     def __init__(self, board, pin):
         self.board = board
-        if self.board.pinout[pin][0] & self.board.cap_gpio:
-            self.logical_pin = self.board.pinout[pin][1][0]
+        if self.board.pinout[pin].capabilities & CAP_GPIO:
+            self.logical_pin = self.board.pinout[pin].pinID
         else:
             errmsg("UPER API: Pin No:%d is not GPIO pin.", pin)
             raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
