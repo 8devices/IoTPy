@@ -22,7 +22,6 @@ class ADC:
         self.adc_pin = self.board.pinout[pin].extra[0]
         self.board.uper_io(0, self.board.encode_sfp(3, [self.logical_pin, GPIO.HIGH_Z]))
         self.board.uper_io(0, self.board.encode_sfp(2, [self.logical_pin])) # set secondary pin function
-        self.pull = self.HIGH_Z
         self.primary = False
 
     def read(self):
