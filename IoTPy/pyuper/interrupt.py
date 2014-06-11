@@ -26,12 +26,13 @@ class Interrupt:
             errmsg("UPER API: Pin No:%d is not GPIO pin, can't attach interrupt.", pin)
             raise IoTPy_APIError("Wrong Pin number.")
 
-    def attach(self, mode, callback, debounce_time=50):
+    def attach(self, mode, callback, user_object=None, debounce_time=50):
         """
         Attach (enable) or reconfigure GPIO interrupt event.
 
         :param mode: GPIO interrupt mode.
         :param callback: User callback function. This function is executed when the interrupt event is received.
+        :param user_object: Optional user defined object, which will be passed back to the callback function.
         :param debounce_time: Interrupt disable time in milliseconds after the triggering event. This is used to "debounce" buttons or \
         to protect communication channel from data flood. Optional, default is 50ms.
 
@@ -48,7 +49,7 @@ class Interrupt:
             except ValueError:
                 errmsg("UPER API: more than 8 interrupts requested")
                 raise IoTPy_APIError("Too many interrupts.")
-        self.board.callbackdict[self.logical_pin] = [mode, callback]
+        self.board.callbackdict[self.logical_pin] = {'mode':mode, 'callback':callback, 'userobject':user_object }
         self.board.uper_io(0, self.board.encode_sfp(6, [interruptID, self.logical_pin, mode, debounce_time]))
         return True
 

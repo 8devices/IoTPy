@@ -212,8 +212,11 @@ class IoBoard:
         :param interrupt_data:
         :return:
         """
+
         try:
-            self.callbackdict[self.interrupts[interrupt_data[0]]][1](interrupt_data)
+            interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
+            callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
+            callback_entry['callback'](interrupt_event, callback_entry['userobject'])
         except:
             raise IoTPy_APIError("UPER API: internal call back problem.")
         return
