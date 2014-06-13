@@ -35,7 +35,7 @@ class AM2321:
         pass
 
     def _read_raw(self, command, regaddr, regcount):
-        self.interface.transaction(self.address, '', 1, True)
+        self.interface.transaction(self.address, '\0', 0, True)
         self.interface.transaction(self.address, command+regaddr+chr(regcount), 0)
         sleep(0.002)
         buf = self.interface.transaction(self.address, '', regcount + 4)

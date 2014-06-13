@@ -3,7 +3,7 @@ from time import sleep
 from IoTPy.pyuper.ioboard import IoBoard
 from IoTPy.pyuper.i2c import I2C
 from IoTPy.pyuper.utils import IoTPy_APIError, die
-from IoTPy.things.si7020 import Si7020
+from IoTPy.things.si70xx import Si7020
 
 
 try:

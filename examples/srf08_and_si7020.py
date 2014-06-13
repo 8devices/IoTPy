@@ -2,7 +2,7 @@ from time import sleep
 
 import  mosquitto
 
-from IoTPy.things.si7020 import Si7020
+from IoTPy.things.si70xx import Si7020
 from IoTPy.things.srf08 import Srf08
 from IoTPy.pyuper.ioboard import IoBoard
 from IoTPy.pyuper.i2c import I2C
