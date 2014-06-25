@@ -15,16 +15,16 @@ Things Reference
     :undoc-members:
     :show-inheritance:
 
-:mod:`SHT1x sensor`
--------------------
+:mod:`SHT1x sensors`
+--------------------
 .. automodule:: IoTPy.things.sht1x
     :members:
     :undoc-members:
     :show-inheritance:
 	
-:mod:`Si7020 sensor`
---------------------
-.. automodule:: IoTPy.things.si7020
+:mod:`Si70xx sensors`
+---------------------
+.. automodule:: IoTPy.things.si70xx
     :members:
     :undoc-members:
     :show-inheritance:
