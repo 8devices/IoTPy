@@ -30,11 +30,17 @@ class Interrupt:
         """
         Attach (enable) or reconfigure GPIO interrupt event.
 
-        :param mode: GPIO interrupt mode.
-        :param callback: User callback function. This function is executed when the interrupt event is received.
-        :param user_object: Optional user defined object, which will be passed back to the callback function.
-        :param debounce_time: Interrupt disable time in milliseconds after the triggering event. This is used to "debounce" buttons or \
-        to protect communication channel from data flood. Optional, default is 50ms.
+        :param mode: GPIO interrupt mode. Can have one of these values: Interrupt.EDGE_RISE, Interrupt.EDGE_FALL, \
+        Interrupt.EDGE_CHANGE, Interrupt.LEVEL_LOW or Interrupt.LEVEL_HIGH.
+        :param callback: User callback function. This function is executed when the interrupt event is received. \
+        It should take two arguments: interrupt event description and user object. Interrupt event descriptor is \
+        dictionary with three fields: 'id' - the interrupt ID (interrupt channel), 'type' - interrupt event type \
+        (same meaning as mode) and 'values' - the logical values on each of interrupt channel (N-th bit represents  \
+        logical pin value of interrupt channel N). User object is the same object as user_object.
+        :param user_object: User defined object, which will be passed back to the callback function. Optional,  \
+        default is None.
+        :param debounce_time: Interrupt disable time in milliseconds after the triggering event. This is used to \
+        "debounce" buttons or to protect communication channel from data flood. Optional, default is 50ms.
 
         :return: True
         :raise: IoTPy_APIError
