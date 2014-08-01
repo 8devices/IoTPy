@@ -57,7 +57,7 @@ class Interrupt:
                 raise IoTPy_APIError("Too many interrupts.")
         self.board.callbackdict[self.logical_pin] = {'mode':mode, 'callback':callback, 'userobject':user_object }
         self.board.uper_io(0, self.board.encode_sfp(6, [interruptID, self.logical_pin, mode, debounce_time]))
-        return True
+        return interruptID
 
     def detach(self):
         """
@@ -71,14 +71,19 @@ class Interrupt:
             interruptID = self.board.interrupts.index(self.logical_pin)
         except ValueError:
             errmsg("UPER API: trying to detach non existing interrupt.")
-            IoTPy_APIError("trying to detaching non existing interrupt.")
+            return False
+            #raise IoTPy_APIError("trying to detaching non existing interrupt.")
+			
         self.board.interrupts[interruptID] = None
+		
         try:
             del self.board.callbackdict[self.logical_pin]
         except KeyError:
             errmsg("UPER API: trying to detach non existing interrupt.")
-            IoTPy_APIError("trying to detaching non existing interrupt.")
+            raise IoTPy_APIError("trying to detaching non existing interrupt.")
+
         self.board.uper_io(0, self.board.encode_sfp(7, [interruptID]))
+
         return True
 
     def __enter__(self):

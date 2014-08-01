@@ -213,12 +213,13 @@ class IoBoard:
         :return:
         """
 
+        interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
+        callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
+			
         try:
-            interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
-            callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
             callback_entry['callback'](interrupt_event, callback_entry['userobject'])
-        except:
-            raise IoTPy_APIError("UPER API: internal call back problem.")
+        except Exception as e:
+            errmsg("[UPER API] Interrupt callback exception: %s" % e)
         return
 
     def get_device_info(self):
@@ -289,8 +290,8 @@ class Reader:
                     interrupt = self.irq_requests.pop(0)
                     try:
                         self.callback(interrupt[1])
-                    except:
-                        errmsg("UPER API: Interrupt callback error")
+                    except Exception as e:
+                        errmsg("UPER API: Interrupt callback error (%s)" % e)
 
         self.alive = False
 
