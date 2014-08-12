@@ -35,13 +35,18 @@ class AM2321:
         pass
 
     def _read_raw(self, command, regaddr, regcount):
-        self.interface.transaction(self.address, '\0', 0, True)
+        self.interface.transaction(self.address, '\0', 0)
         self.interface.transaction(self.address, command+regaddr+chr(regcount), 0)
         sleep(0.002)
-        buf = self.interface.transaction(self.address, '', regcount + 4)
+        buf, err = self.interface.transaction(self.address, '', regcount + 4)
+
+        if err:
+            raise IoTPy_ThingError("AM2321 reading error.")
+
         crc = unpack('<H', buf[-2:])[0]
         if crc != self._am_crc16(buf[:-2]):
-            raise IoTPy_ThingError("AM2321 reading CRC error.")
+            raise IoTPy_ThingError("AM2321 CRC error.")
+
         return buf[2:-2]
 
     def _am_crc16(self, buf):

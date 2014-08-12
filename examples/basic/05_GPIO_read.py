@@ -1,12 +1,14 @@
-from IoTPy.pyuper.gpio import GPIO
+from IoTPy.core.gpio import GPIO
 from IoTPy.pyuper.ioboard import IoBoard
 
-with IoBoard() as uper, GPIO(uper, 27) as redPin, GPIO(uper, 18) as buttonPin:
+with IoBoard() as uper, uper.GPIO(27) as redPin, uper.GPIO(18) as buttonPin:
 
-    buttonPin.mode(GPIO.PULL_UP)
-    redPin.mode(GPIO.OUTPUT)
+    buttonPin.setup(GPIO.INPUT, GPIO.PULL_UP)
+    redPin.setup(GPIO.OUTPUT)
 
     oldState = buttonPin.read()
+    redPin.write(oldState)
+
     nButtonPress = 0
     nButtonRelease = 0
 

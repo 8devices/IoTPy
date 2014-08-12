@@ -1,4 +1,5 @@
-from IoTPy.pyuper.interrupt import Interrupt
+from IoTPy.core.gpio import GPIO
+
 
 class RotaryEncoder:
 
@@ -32,14 +33,15 @@ class RotaryEncoder:
 
         self._user_callback = callback
 
-        self._id0 = chan0.attach(Interrupt.EDGE_CHANGE, self.call_back, None, 3)
-        self._id1 = chan1.attach(Interrupt.EDGE_CHANGE, self.call_back, None, 3)
+        self._id0 = chan0.attach_irq(GPIO.CHANGE, self.call_back, None, 3)
+        self._id1 = chan1.attach_irq(GPIO.CHANGE, self.call_back, None, 3)
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        pass
+        self._chan0.detach_irq()
+        self._chan1.detach_irq()
 
     def call_back(self, event, obj):
         pins = event['values']

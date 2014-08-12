@@ -19,6 +19,9 @@ class Lm75:
     def __enter__(self):
         return self
 
+    def __exit__(self, ex_type, ex_value, traceback):
+        pass
+
     def temperature(self):
         """
         Read and return temperature.
@@ -28,12 +31,9 @@ class Lm75:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, '\x00', 2)
-            result_integer = unpack('>H', result_raw)[0]
+            data, err = self.interface.transaction(self.address, '\x00', 2)
+            result_integer = unpack('>H', data)[0]
             temperature = result_integer / 256.0
         except IoTPy_ThingError:
             raise IoTPy_ThingError("LM75 - temperature reading error.")
         return temperature
-
-    def __exit__(self, ex_type, ex_value, traceback):
-        pass

@@ -1,7 +1,7 @@
 # Stepper motor driver
 # Uros Petrevski, 2014
 # Implemented both full step and half-step control
-from IoTPy.pyuper.gpio import GPIO
+from IoTPy.core.gpio import GPIO
 from time import sleep
 
 FULL_STEP = 0
@@ -16,17 +16,17 @@ class Stepper:
     :type uperObj: :class:`IoTPy.pyuper.ioboard.IoBoard`
     :param stepsIn360: The number of steps in full (360 degree) rotation.
     :type stepsIn360: int
-    :param coilApin0: GPIO ID of coil A pin 0.
-    :type coilApin0: int
-    :param coilApin1: GPIO ID of coil A pin 1.
-    :type coilApin1: int
-    :param coilBpin0: GPIO ID of coil B pin 0.
-    :type coilBpin0: int
-    :param coilBpin1: GPIO ID of coil B pin 1.
-    :type coilBpin1: int
+    :param coilA0: GPIO of coil A pin 0.
+    :type coilA0: GPIO
+    :param coilA1: GPIO of coil A pin 1.
+    :type coilA1: GPIO
+    :param coilB0: GPIO of coil B pin 0.
+    :type coilB0: GPIO
+    :param coilB1: GPIO of coil B pin 1.
+    :type coilB1: GPIO
     """
 
-    def __init__(self, uperObj, stepsIn360, coilApin0, coilApin1, coilBpin0, coilBpin1):
+    def __init__(self, uperObj, stepsIn360, coilA0, coilA1, coilB0, coilB1):
         self.u = uperObj
         self.totalSteps = stepsIn360
         self.delayLength = 0.01
@@ -42,18 +42,18 @@ class Stepper:
         self.stepperMode = FULL_STEP
 
         # declare pins
-        self.A0 = self.u.get_pin(GPIO, coilApin0)
-        self.A1 = self.u.get_pin(GPIO, coilApin1)
+        self.A0 = coilA0
+        self.A1 = coilA1
 
-        self.B0 = self.u.get_pin(GPIO, coilBpin0)
-        self.B1 = self.u.get_pin(GPIO, coilBpin1)
+        self.B0 = coilB0
+        self.B1 = coilB1
 
         # declare motor pins in output mode
-        self.A0.mode(GPIO.OUTPUT)
-        self.A1.mode(GPIO.OUTPUT)
+        self.A0.setup(GPIO.OUTPUT)
+        self.A1.setup(GPIO.OUTPUT)
 
-        self.B0.mode(GPIO.OUTPUT)
-        self.B1.mode(GPIO.OUTPUT)
+        self.B0.setup(GPIO.OUTPUT)
+        self.B1.setup(GPIO.OUTPUT)
 
     def setStepperMode(self, sMode):
         """

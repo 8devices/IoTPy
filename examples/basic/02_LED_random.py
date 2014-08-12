@@ -1,15 +1,15 @@
 import random
 from time import sleep
-from IoTPy.pyuper.gpio import GPIO
+from IoTPy.core.gpio import GPIO
 from IoTPy.pyuper.ioboard import IoBoard
 
-with IoBoard() as uper, GPIO(uper, 27) as redPin, GPIO(uper, 28) as greenPin, \
-        GPIO(uper, 34) as bluePin:
+with IoBoard() as uper, \
+        uper.GPIO(27) as redPin, uper.GPIO(28) as greenPin, uper.GPIO(34) as bluePin:
 
     pins = [redPin, greenPin, bluePin]
 
     for pin in pins:
-        pin.mode(GPIO.OUTPUT)  # set GPIO pins to be output
+        pin.setup(GPIO.OUTPUT)  # set GPIO pins to be output
 
     while True:
         pin = random.choice(pins)  # choose random rgb pin

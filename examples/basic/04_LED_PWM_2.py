@@ -1,15 +1,14 @@
 from colorsys import hls_to_rgb
 from time import sleep
 from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.pyuper.pwm import PWM
 
 with IoBoard() as uper, \
-        PWM(uper, 27) as redPin, PWM(uper, 28) as greenPin, PWM(uper, 34) as bluePin:
+        uper.PWM(27, polarity=0) as redPin, uper.PWM(28, polarity=0) as greenPin, uper.PWM(34, polarity=0) as bluePin:
 
     while True:
         for color in xrange(500):
             rgb = hls_to_rgb(color*0.002, 0.1, 1)
-            redPin.write(rgb[0])
-            greenPin.write(rgb[1])
-            bluePin.write(rgb[2])
+            redPin.set_duty_cycle(rgb[0]*100)
+            greenPin.set_duty_cycle(rgb[1]*100)
+            bluePin.set_duty_cycle(rgb[2]*100)
             sleep(0.002)

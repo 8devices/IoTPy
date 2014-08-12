@@ -1,10 +1,10 @@
 from time import sleep
-from IoTPy.pyuper.gpio import GPIO
+from IoTPy.core.gpio import GPIO
 from IoTPy.pyuper.ioboard import IoBoard
 
-with IoBoard() as uper, GPIO(uper, 27) as redPin:
+with IoBoard() as uper, uper.GPIO(27) as redPin:
 
-    redPin.mode(GPIO.OUTPUT)  # set GPIO pin to be output
+    redPin.setup(GPIO.OUTPUT)  # set GPIO pin to be output
 
     while True:
         redPin.write(0)  # Turn led ON (LED on board is common anode - therefore inverted)

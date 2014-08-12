@@ -50,8 +50,8 @@ class Si7013:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, SI70xx_CMD_TEMP_HOLD, 2)
-            result_integer = unpack('>H', result_raw[:2])[0]
+            data, err = self.interface.transaction(self.address, SI70xx_CMD_TEMP_HOLD, 2)
+            result_integer = unpack('>H', data[:2])[0]
             temp = (175.72 * result_integer)/65536 - 46.85
         except IoTPy_ThingError:
             raise IoTPy_ThingError("Si7020 - temperature reading error.")
@@ -66,8 +66,8 @@ class Si7013:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, SI70xx_CMD_RH_HOLD, 2)
-            result_integer = unpack('>H', result_raw[:2])[0]
+            data, err = self.interface.transaction(self.address, SI70xx_CMD_RH_HOLD, 2)
+            result_integer = unpack('>H', data[:2])[0]
             rh = (125.0 * result_integer)/65536 - 6
         except IoTPy_ThingError:
             raise IoTPy_ThingError("Si7020 - humidity reading error.")
@@ -82,8 +82,8 @@ class Si7013:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, SI70xx_CMD_ANALOG, 2)
-            result_integer = unpack('>H', result_raw[:2])[0]
+            data, err = self.interface.transaction(self.address, SI70xx_CMD_ANALOG, 2)
+            result_integer = unpack('>H', data[:2])[0]
             return result_integer
         except IoTPy_ThingError:
             raise IoTPy_ThingError("Si7020 - analog reading error.")
@@ -117,8 +117,8 @@ class Si7020:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, SI70xx_CMD_TEMP_HOLD, 2)
-            result_integer = unpack('>H', result_raw[:2])[0]
+            data, err = self.interface.transaction(self.address, SI70xx_CMD_TEMP_HOLD, 2)
+            result_integer = unpack('>H', data[:2])[0]
             temp = (175.72 * result_integer)/65536 - 46.85
         except IoTPy_ThingError:
             raise IoTPy_ThingError("Si7020 - temperature reading error.")
@@ -133,8 +133,8 @@ class Si7020:
         :raise: IoTPy_ThingError
         """
         try:
-            result_raw = self.interface.transaction(self.address, SI70xx_CMD_RH_HOLD, 2)
-            result_integer = unpack('>H', result_raw[:2])[0]
+            data, err = self.interface.transaction(self.address, SI70xx_CMD_RH_HOLD, 2)
+            result_integer = unpack('>H', data[:2])[0]
             rh = (125.0 * result_integer)/65536 - 6
         except IoTPy_ThingError:
             raise IoTPy_ThingError("Si7020 - humidity reading error.")
