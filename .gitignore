@@ -224,3 +224,4 @@ pip-log.txt
 ## Sphinx
 ###########
 docs/_*
+.idea/dictionaries/*.xml
