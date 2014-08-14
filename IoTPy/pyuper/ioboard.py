@@ -19,20 +19,20 @@ import glob
 import serial
 
 from IoTPy.pyuper.utils import errmsg, IoTPy_APIError
-from IoTPy.pyuper.pinouts import UPER1_PINOUT
+
 
 class IoBoard:
     """
     Uper type board class.
 
-    :param pinout: A list describing physical board pin layout and capabilities. Optional, default is IoPinout.UPER1_PINOUT.
+    :param pinout: A list describing physical board pin layout and capabilities.
     :type pinout: :class:`IoTPy.pyuper.pinouts.IoPinout`
     :param serial_port: Name of SFP command serial communications port.
     :type serial_port: str
     """
 
-    def __init__(self, pinout=UPER1_PINOUT, serial_port=None):
-        """__init__(self, pinout=UPER1_PINOUT, serial_port=None)"""
+    def __init__(self, pinout, serial_port=None):
+        """__init__(self, pinout, serial_port=None)"""
         ser = None
         if serial_port is None:
             my_platform = platform.system()

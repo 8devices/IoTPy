@@ -1,8 +1,11 @@
 from time import sleep
 from IoTPy.core.gpio import GPIO
-from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.uper import UPER1
 
-with IoBoard() as uper, uper.GPIO(27) as redPin:
+# This is platform dependent - please configure to your application
+LED_PIN_ID = 27
+
+with UPER1() as board, board.GPIO(LED_PIN_ID) as redPin:
 
     redPin.setup(GPIO.OUTPUT)  # set GPIO pin to be output
 
