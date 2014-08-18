@@ -138,8 +138,12 @@ class IoBoard:
         :return: Binary SFP command.
         :rtype: str
         """
-        functions = {types.StringType: self._encode_bytes, types.IntType: self._encode_int}
-        sfp_command = chr(command) + ''.join(functions[type(arg)](arg) for arg in args)
+        functions = {
+            types.StringType: self._encode_bytes,
+            bytearray: self._encode_bytes,
+            types.IntType: self._encode_int
+        }
+        sfp_command = chr(command) + ''.join(str(functions[type(arg)](arg)) for arg in args)
         sfp_command = '\xd4' + struct.pack('>H', len(sfp_command)) + sfp_command
         return sfp_command
 
