@@ -68,3 +68,8 @@ class SPIFlash:
         self.cs.write(GPIO.LOW)
         self.spi.write(buf)
         self.cs.write(GPIO.HIGH)
+
+    def chip_erase(self):
+        self.cs.write(GPIO.LOW)
+        self.spi.write('\xC7')
+        self.cs.write(GPIO.HIGH)
