@@ -1,7 +1,7 @@
 from time import sleep
-from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.uper import UPER1
 
-with IoBoard() as uper, uper.PWM(27) as redPin:
+with UPER1() as board, board.PWM(27) as redPin:
 
     redPin.set_frequency(1000)
 

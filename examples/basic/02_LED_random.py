@@ -1,10 +1,10 @@
 import random
 from time import sleep
 from IoTPy.core.gpio import GPIO
-from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.uper import UPER1
 
-with IoBoard() as uper, \
-        uper.GPIO(27) as redPin, uper.GPIO(28) as greenPin, uper.GPIO(34) as bluePin:
+with UPER1() as board, \
+        board.GPIO(27) as redPin, board.GPIO(28) as greenPin, board.GPIO(34) as bluePin:
 
     pins = [redPin, greenPin, bluePin]
 

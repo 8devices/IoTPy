@@ -1,10 +1,10 @@
 from colorsys import hls_to_rgb
-from IoTPy.pyuper.ioboard import IoBoard
+from IoTPy.pyuper.uper import UPER1
 
 
-with IoBoard() as uper, \
-        uper.ADC("ADC0") as adcPin1, \
-        uper.PWM("PWM0_0") as redPin, uper.PWM("PWM0_1") as greenPin, uper.PWM("PWM0_2") as bluePin:
+with UPER1() as board, \
+        board.ADC("ADC0") as adcPin1, \
+        board.PWM("PWM0_0") as redPin, board.PWM("PWM0_1") as greenPin, board.PWM("PWM0_2") as bluePin:
 
     while True:
         # average for better results
