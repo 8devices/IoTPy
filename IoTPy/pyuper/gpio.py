@@ -146,3 +146,9 @@ class UPER1_GPIO(GPIO):
 
     def clear_irq_count(self, clear_to=0):
         raise NotImplementedError()
+
+    def read_pulse(self, level=GPIO.HIGH, timeout=100000):
+        if self.direction != self.INPUT:
+            self.setup(GPIO.INPUT, self.resistor)
+
+        return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(9, [self.logical_pin, level, timeout])))[1][0]
