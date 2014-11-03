@@ -1,15 +1,28 @@
 
 
 class GPIO:
+    """
+    This is a template class for IoTPy modules with GPIO functionality. Each such module should implement
+    :class:`GPIO` functions according to their description.
+    Usually GPIO modules will be a part of a device or board. In these cases the device (or board) should
+    implement :class:`GPIOProducer` class and :func:`IoTPy.core.gpio.GPIOProducer.GPIO` method be called
+    to retrieve an underlying GPIO module.
+
+    """
 
     # GPIO directions
     INPUT = 0
+    """GPIO INPUT direction constant"""
     OUTPUT = 1
+    """GPIO OUTPUT direction constant"""
 
     # GPIO resistors
     NONE = 0
+    """ GPIO no-pull (high-z) resistor constant """
     PULL_UP = 1
+    """ GPIO pull-up resistor constant """
     PULL_DOWN = 2
+    """ GPIO pull-down resistor constant """
 
     # GPIO events
     LOW = 0
@@ -25,6 +38,14 @@ class GPIO:
         raise NotImplementedError()
 
     def setup(self, direction, resistor=PULL_UP):
+        """setup(direction, resistor=:const:`GPIO.PULL_UP`)
+        Configure GPIO pin direction and pull resistors.
+
+        :param direction:  GPIO direction (:const:`GPIO.INPUT` or :const:`GPIO.OUTPUT`)
+        :param resistor: Type of resistor to use when GPIO is in INPUT mode (:const:`GPIO.NONE`,
+         :const:`GPIO.PULL_UP` or :const:`GPIO.PULL_DOWN`)
+        :return: None
+        """
         raise NotImplementedError()
 
     def read(self):
