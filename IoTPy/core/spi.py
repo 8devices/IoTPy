@@ -1,6 +1,6 @@
 
 
-class SPI:
+class SPI(object):
 
     MODE_0 = 0
     MODE_1 = 1
@@ -23,7 +23,7 @@ class SPI:
         raise NotImplementedError()
 
 
-class SPIProducer:
+class SPIProducer(object):
 
     def SPI(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):
         raise NotImplementedError()

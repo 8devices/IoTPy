@@ -1,6 +1,6 @@
 
 
-class PWM:
+class PWM(object):
 
     def __enter__(self):
         raise NotImplementedError()
@@ -21,7 +21,7 @@ class PWM:
         raise NotImplementedError()
 
 
-class PWM_Producer:
+class PWMProducer(object):
 
     def PWM(self, name, freq=100, polarity=1, *args, **kwargs):
         raise NotImplementedError()

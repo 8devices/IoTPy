@@ -1,6 +1,6 @@
 
 
-class GPIO:
+class GPIO(object):
     """
     This is a template class for IoTPy modules with GPIO functionality. Each such module should implement
     :class:`GPIO` functions according to their description.
@@ -67,7 +67,7 @@ class GPIO:
         raise NotImplementedError()
 
 
-class GPIOProducer:
+class GPIOProducer(object):
 
     def GPIO(self, name, *args, **kwargs):
         raise NotImplementedError()

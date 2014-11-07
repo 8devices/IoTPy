@@ -1,6 +1,6 @@
 
 
-class I2C:
+class I2C(object):
 
     def __enter__(self):
         raise NotImplementedError()
@@ -18,7 +18,7 @@ class I2C:
         raise NotImplementedError()
 
 
-class I2CProducer:
+class I2CProducer(object):
 
     def I2C(self, name, clock=15000, *args, **kwargs):
         raise NotImplementedError()
