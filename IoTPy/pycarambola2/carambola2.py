@@ -5,13 +5,15 @@ import subprocess
 import array
 
 from IoTPy.core.gpio import GPIOProducer
+from IoTPy.core.i2c import I2CProducer
 from IoTPy.core.spi import SPI, SPIProducer
 from IoTPy.linux.gpio import LinuxGPIO
+from IoTPy.linux.i2c import LinuxI2C
 from IoTPy.linux.ioctl_def import IOW
 from IoTPy.pycarambola2.spi import Carambola2_SPI
 
 
-class Carambola2(GPIOProducer, SPIProducer):
+class Carambola2(GPIOProducer, SPIProducer, I2CProducer):
 
     gpio_names = [1, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 23]
 
@@ -53,10 +55,17 @@ class Carambola2(GPIOProducer, SPIProducer):
 
         return Carambola2_SPI(self._caramiot, clock, mode, cs=name)
 
+    def I2C(self, name=0, *args, **kwargs):
+        if isinstance(name, int):
+            name = "/dev/i2c-%d" % name
+
+        return LinuxI2C(name)
+
 
 class Caramiot(object):
 
     CARAMIOT_MAGIC = ord('\xC2')
+
     CARAMIOT_IOC_SPI_INIT = IOW(CARAMIOT_MAGIC, 9, 4)
     CARAMIOT_IOC_SPI_CLEAN = IOW(CARAMIOT_MAGIC, 10, 4)
 

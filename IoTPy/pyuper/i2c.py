@@ -61,8 +61,8 @@ class UPER1_I2C(I2C):
         :type write_data: str
         :param read_length: A number of bytes to be received. If read_length is 0, no read transaction will be executed.
         :type read_length: int
-        :return: Received data or I2C communication error code.
-        :rtype: str or int
+        :return: Received data and I2C transaction status/error code.
+        :rtype: (str, int)
         :raise: IoTPy_APIError, IoTPy_ThingError
         """
 

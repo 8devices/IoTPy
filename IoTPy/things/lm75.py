@@ -32,6 +32,10 @@ class Lm75:
         """
         try:
             data, err = self.interface.transaction(self.address, '\x00', 2)
+
+            if err:
+                return None
+
             result_integer = unpack('>H', data)[0]
             temperature = result_integer / 256.0
         except IoTPy_ThingError:
