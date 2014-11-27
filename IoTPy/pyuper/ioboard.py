@@ -2,7 +2,7 @@
 # encoding: utf-8
 from IoTPy.core.spi import SPI
 from IoTPy.pyuper.adc import UPER1_ADC
-from IoTPy.pyuper.gpio import UPER1_GPIO
+from IoTPy.pyuper.gpio import UPER1_GPIO, UPER1_GPIOPort
 from IoTPy.pyuper.i2c import UPER1_I2C
 from IoTPy.pyuper.pwm import UPER1_PWM
 from IoTPy.pyuper.spi import UPER1_SPI
@@ -287,6 +287,13 @@ class IoBoard:
             raise IoTPy_APIError("GPIO name must be an integer.")
 
         return UPER1_GPIO(self, name)
+
+    def GPIOPort(self, names, *args, **kwargs):
+        for name in names:
+            if not isinstance(name, int):
+                raise IoTPy_APIError("GPIO name must be an integer.")
+
+        return UPER1_GPIOPort(self, names)
 
     def I2C(self, name, *args, **kwargs):
         return UPER1_I2C(self)

@@ -67,6 +67,10 @@ class GPIO(object):
         raise NotImplementedError()
 
 
+class GPIOPort(GPIO):
+    pass
+
+
 class GPIOProducer(object):
 
     def GPIO(self, name, *args, **kwargs):

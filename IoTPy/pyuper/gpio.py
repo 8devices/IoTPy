@@ -1,3 +1,4 @@
+import struct
 from IoTPy.pyuper.utils import IoTPy_APIError, errmsg
 from IoTPy.pyuper.pinouts import CAP_GPIO
 from IoTPy.core.gpio import GPIO
@@ -152,3 +153,92 @@ class UPER1_GPIO(GPIO):
             self.setup(GPIO.INPUT, self.resistor)
 
         return self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(9, [self.logical_pin, level, timeout])))[1][0]
+
+
+class UPER1_GPIOPort(GPIO):
+    """
+    GPIOPort (General Purpose Input and Output) port module.
+
+    :param board: IoBoard to which the pin belongs to.
+    :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`
+    :param pins: GPIO pin numbers.
+    :type pins: list
+    :raise: IoTPy_APIError
+    """
+
+    def __init__(self, board, pins):
+        self.board = board
+
+        for pin in pins:
+            if not self.board.pinout[pin].capabilities & CAP_GPIO:
+                raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
+
+        self._logical_pins = list(self.board.pinout[pin].pinID for pin in pins)
+        self._logical_pins = struct.pack("B"*len(self._logical_pins), *self._logical_pins)
+
+        # Configure default state to be input with pull-up resistor
+        self.direction = GPIO.INPUT
+        self.resistor = GPIO.PULL_UP
+        self.setup(self.direction, self.resistor)
+        self.board.uper_io(0, self.board.encode_sfp(1, [self._logical_pins]))  # set primary
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+    def setup(self, direction, resistor=GPIO.PULL_UP):
+        if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
+            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+
+        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
+            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
+
+        self.direction = direction
+
+        if direction == GPIO.INPUT:
+            self.resistor = resistor
+
+            if resistor == GPIO.PULL_UP:
+                mode = 4  # PULL_UP
+            elif resistor == GPIO.PULL_DOWN:
+                mode = 2  # PULL_DOWN
+            else:
+                mode = 0  # HIGH_Z
+        else:
+            mode = 1  # OUTPUT
+
+        self.board.uper_io(0, self.board.encode_sfp(3, [self._logical_pins, chr(mode)*len(self._logical_pins)]))
+
+    def write(self, value):
+        """
+        Write a digital port value. If GPIO port is not configured as output, set it's GPIO mode to GPIO.OUTPUT.
+
+        :param value: Digital output value
+        :type value: int
+        """
+        if self.direction != GPIO.OUTPUT:
+            self.setup(GPIO.OUTPUT)
+
+        values = list(((value >> i) & 1) for i in xrange(len(self._logical_pins)))
+        values = struct.pack("B"*len(self._logical_pins), *values)
+
+        self.board.uper_io(0, self.board.encode_sfp(4, [self._logical_pins, values]))
+
+    def read(self):
+        """
+        Read a digital port value. If GPIO port in not configure as input, set it to GPIO.PULL_UP pin mode.
+
+        :return: Digital port value.
+        :rtype: int
+        """
+        if self.direction != self.INPUT:
+            self.setup(GPIO.INPUT, self.resistor)
+
+        values = self.board.decode_sfp(self.board.uper_io(1, self.board.encode_sfp(5, [self._logical_pins])))[1][1]
+        value = 0
+        for i, bit in enumerate(values):
+            value |= (ord(bit) & 0x1) << i
+
+        return value
