@@ -1,51 +1,37 @@
-PyUper Reference
-================
+IoTPy Core Reference
+====================
 
-:mod:`IoBoard`
---------------
-.. automodule:: IoTPy.pyuper.ioboard
-    :members:
-    :undoc-members:
-    :show-inheritance:
-	
 :mod:`GPIO pin module`
 ----------------------
-.. automodule:: IoTPy.pyuper.gpio
+.. automodule:: IoTPy.core.gpio
     :members:
     :undoc-members:
     :show-inheritance:
-	
+
 :mod:`ADC pin module`
 ---------------------
-.. automodule:: IoTPy.pyuper.adc
+.. automodule:: IoTPy.core.adc
     :members:
-    :undoc-members:
     :show-inheritance:
-	
+
 :mod:`PWM pin module`
 ---------------------
-.. automodule:: IoTPy.pyuper.pwm
+.. automodule:: IoTPy.core.pwm
     :members:
     :undoc-members:
     :show-inheritance:
-	
+
 :mod:`I2C communication module`
 -------------------------------
-.. automodule:: IoTPy.pyuper.i2c
+.. automodule:: IoTPy.core.i2c
     :members:
     :undoc-members:
     :show-inheritance:
-	
+
 :mod:`SPI communication module`
 -------------------------------
-.. automodule:: IoTPy.pyuper.spi
+.. automodule:: IoTPy.core.spi
     :members:
     :undoc-members:
     :show-inheritance:
-	
-:mod:`Pinouts`
---------------
-.. automodule:: IoTPy.pyuper.pinouts
-    :members:
-    :undoc-members:
-    :show-inheritance:
+

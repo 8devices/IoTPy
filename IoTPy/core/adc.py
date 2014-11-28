@@ -2,8 +2,7 @@
 
 class ADC(object):
     """
-    This is a template class for IoTPy modules with ADC functionality. Each such module should implement
-    :class:`ADC` functions according to their description.
+    This is an IoTPy core class for pins or modules with ADC (Analog-to-Digital Converter) functionality.
     Usually ADC modules will be a part of a device or board. In these cases the device (or board) should
     implement :class:`ADCProducer` class and :func:`IoTPy.core.adc.ADCProducer.ADC` method be called
     to retrieve an underlying ADC module.
@@ -38,15 +37,15 @@ class ADC(object):
 
 class ADCProducer(object):
     """
-    This is a template class for boards or devices that can produce an :class:`IoTPy.core.adc.ADC` module.
+    This is a template class for boards or devices that produce an :class:`IoTPy.core.adc.ADC` module.
     """
 
     def ADC(self, name, *args, **kwargs):
         """
         Create and return an ADC module.
 
-        :param name: Identification name of the ADC module. It is device specific and can be a string "ADC0"
-         or simply an integer 0.
+        :param name: Board specific identification name of the ADC module. For compatibility reasons it is recommended
+         to have this parameter even if the board has only one ADC module.
         :param args: Board specific positional arguments.
         :param kwargs: Board specific named arguments.
         :return: :class:`IoTPy.core.adc.ADC`

@@ -6,13 +6,13 @@
 Welcome to IoTPy's documentation!
 =================================
 
-Contents:
-
 .. toctree::
-   :maxdepth: 5
-   
-   reference
+   :maxdepth: 2
 
+   about
+   install
+   tutorial
+   reference
 
 
 Indices and tables
