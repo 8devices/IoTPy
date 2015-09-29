@@ -1,4 +1,4 @@
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 from IoTPy.things.rotary_encoder import RotaryEncoder
 from time import sleep
 

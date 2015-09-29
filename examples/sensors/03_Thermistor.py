@@ -1,5 +1,5 @@
 from colorsys import hls_to_rgb
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 
 
 with UPER1() as board, \

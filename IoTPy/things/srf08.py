@@ -1,7 +1,7 @@
 from time import sleep
 from struct import unpack, pack
 
-from IoTPy.pyuper.utils import IoTPy_ThingError, IoTPy_IOError, IoTPy_APIError,errmsg
+from IoTPy.ioboard.utils import IoTPy_ThingError, IoTPy_IOError, IoTPy_APIError,errmsg
 
 
 class Srf08:

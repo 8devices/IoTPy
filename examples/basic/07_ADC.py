@@ -1,5 +1,5 @@
 from colorsys import hls_to_rgb
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 
 with UPER1() as board, \
         board.ADC("ADC0") as adcPin1, board.ADC("ADC1") as adcPin2, \

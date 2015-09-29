@@ -1,5 +1,5 @@
-from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.pyuper.pinouts import UPER1_PINOUT
+from IoTPy.ioboard.ioboard import IoBoard
+from IoTPy.ioboard.pinouts import UPER1_PINOUT
 
 
 class UPER1(IoBoard):

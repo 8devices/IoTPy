@@ -1,5 +1,5 @@
 from time import sleep
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 from IoTPy.things.si70xx import Si7013, Si7020
 
 with UPER1() as board, board.I2C("I2C0") as i2c, Si7020(i2c, 0x40) as si7020, Si7013(i2c, 0x41) as si7013:

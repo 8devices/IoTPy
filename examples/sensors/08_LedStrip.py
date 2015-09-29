@@ -1,5 +1,5 @@
 from time import sleep
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 from IoTPy.things.led_strip import LedStrip
 
 

@@ -1,5 +1,5 @@
 from struct import unpack
-from IoTPy.pyuper.utils import IoTPy_ThingError
+from IoTPy.ioboard.utils import IoTPy_ThingError
 
 
 class Lm75:

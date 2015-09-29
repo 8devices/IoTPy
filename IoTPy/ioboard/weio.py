@@ -1,5 +1,5 @@
-from IoTPy.pyuper.ioboard import IoBoard
-from IoTPy.pyuper.pinouts import WEIO_PINOUT
+from IoTPy.ioboard.ioboard import IoBoard
+from IoTPy.ioboard.pinouts import WEIO_PINOUT
 
 
 class WeIO(IoBoard):

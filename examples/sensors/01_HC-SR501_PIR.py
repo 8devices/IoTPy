@@ -1,6 +1,6 @@
 from time import sleep
 from IoTPy.core.gpio import GPIO
-from IoTPy.pyuper.uper import UPER1
+from IoTPy.ioboard.uper import UPER1
 
 
 def pir_callback(event, obj):

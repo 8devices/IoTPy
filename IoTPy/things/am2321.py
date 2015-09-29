@@ -1,7 +1,7 @@
 from time import sleep
 from struct import unpack
 
-from IoTPy.pyuper.utils import IoTPy_ThingError
+from IoTPy.ioboard.utils import IoTPy_ThingError
 
 
 I2C_ADDR_AM2321 = 0x5c # 0xB8 >> 1
