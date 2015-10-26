@@ -23,9 +23,9 @@ with UPER1() as board, board.GPIO(27) as redPin, board.GPIO(18) as buttonPin:
 
             if newState == 0:
                 nButtonPress += 1
-                print "Button pressed %i" % nButtonPress
+                print("Button pressed %i" % nButtonPress)
                 redPin.write(0)  # Turn led ON
             else:
                 nButtonRelease += 1
-                print "Button released %i" % nButtonRelease
+                print("Button released %i" % nButtonRelease)
                 redPin.write(1)  # Turn led OFF

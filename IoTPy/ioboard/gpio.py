@@ -1,8 +1,8 @@
-import struct
 from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
 from IoTPy.ioboard.pinouts import CAP_GPIO
 from IoTPy.core.gpio import GPIO
 from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
+import struct
 
 
 class IO_GPIO(GPIO):
@@ -35,6 +35,7 @@ class IO_GPIO(GPIO):
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.detach_irq()
+        pass
 
     def setup(self, direction, resistor=GPIO.PULL_UP):
         """
@@ -132,11 +133,10 @@ class IO_GPIO(GPIO):
         :return: True on success, False otherwise
         :raise: IoTPy_APIError
         """
-
         try:
             irq_id = self.board.interrupts.index(self.logical_pin)
         except ValueError:
-            errmsg("UPER API: trying to detach non existing interrupt.")
+            #errmsg("UPER API: trying to detach non existing interrupt.")
             return False
 
         self.board.interrupts[irq_id] = None

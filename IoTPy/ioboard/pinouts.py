@@ -1,6 +1,7 @@
 __author__ = 'jonas'
 from IoTPy.ioboard.utils import IoTPy_APIError
 import collections
+from six import string_types
 
 # thanks to Mark Lodato for nice structure published on stackoverflow!
 def namedtuple_with_defaults(typename, field_names, default_values=[]):
@@ -32,7 +33,7 @@ class IoPinout(dict):
     def __init__(self, *args, **kw):
         super(IoPinout,self).__init__(*args, **kw)
         for key in self:
-            if not (isinstance(key, int) or isinstance(key, basestring)) or not isinstance(self[key], Pin):
+            if not (isinstance(key, int) or isinstance(key, string_types)) or not isinstance(self[key], Pin):
                 raise IoTPy_APIError("IoPinout must consist of integer or string keys and Pin values.")
 
     def __delitem__(self, key):

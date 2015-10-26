@@ -7,18 +7,15 @@ from IoTPy.ioboard.i2c import IO_I2C
 from IoTPy.ioboard.pwm import IO_PWM
 from IoTPy.ioboard.spi import IO_SPI
 from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
-
-__version__ = "0.01"
-
+from six import string_types
 import threading
-import Queue
+import queue
 import platform
 import glob
-
 import serial
-
 from IoTPy.ioboard.utils import errmsg, IoTPy_APIError
 
+__version__ = '0.01'
 
 class IoBoard:
     """
@@ -64,7 +61,7 @@ class IoBoard:
                     n = port_to_try.inWaiting()        # look if there is more
                     if n:
                         uper_response = uper_response + port_to_try.read(n)
-                        if decode_sfp(uper_response)[0] == -1:  # found port with UPER
+                        if decode_sfp(uper_response)[0] == 255:  # found port with UPER
                             ser = port_to_try
                             break
                     port_to_try.close()
@@ -79,7 +76,7 @@ class IoBoard:
 
         self.ser = ser
         self.ser.flush()
-        self.outq = Queue.Queue()
+        self.outq = queue.Queue()
         self.reader = Reader(self.ser, self.outq, self.internalCallBack, decode_sfp)
 
         self.devicename = "uper"
@@ -125,7 +122,7 @@ class IoBoard:
         if ret != 0:
             try:
                 data = self.outq.get(True, 1)
-            except Queue.Empty:
+            except queue.Empty:
                 raise IoTPy_APIError("Nothing to read on serial port exception.")
         return data
 
@@ -158,7 +155,7 @@ class IoBoard:
             raise IoTPy_APIError("")
         result = result[1]
         if result[0] >> 24 != 0x55:  # 0x55 == 'U'
-            print "UPER error: getDeviceInfo unknown device/firmware type"
+            print("UPER error: getDeviceInfo unknown device/firmware type")
             return
         device_info.append("UPER")  # type
         device_info.append((result[0] & 0x00ff0000) >> 16) #fw major
@@ -195,7 +192,7 @@ class IoBoard:
         return IO_ADC(self, pin)
 
     def GPIO(self, name, *args, **kwargs):
-        if not (isinstance(name, int) or isinstance(name, basestring)):
+        if not (isinstance(name, int) or isinstance(name, string_types)):
             raise IoTPy_APIError("GPIO name must be an integer.")
 
         return IO_GPIO(self, name)
@@ -275,12 +272,12 @@ class Reader:
     def reader(self):
         while self.alive:
             try:
-                data = self.serial.read(1)            #read one, blocking
-                n = self.serial.inWaiting()           #look if there is more
+                data = self.serial.read(1)              #read one, blocking
+                n = self.serial.inWaiting()             #look if there is more
                 if n:
-                    data = data + self.serial.read(n)    #and get as much as possible
+                    data = data + self.serial.read(n)   #and get as much as possible
                 if data:
-                    if data[3] == '\x08':
+                    if data[3:4] == b'\x08':               #check if it's interrupt event
                         interrupt = self.decodefun(data)
                         with self.irq_available:
                             self.irq_requests.append(interrupt)

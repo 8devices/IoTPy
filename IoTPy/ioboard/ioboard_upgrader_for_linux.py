@@ -30,16 +30,16 @@ class Upgrader:
 
         if not os.path.isfile(self.fw_file):
             # download firmware file
-            print "Will get firmware from URL:", fwUrl
+            print("Will get firmware from URL:", fwUrl)
             try:
                 req = urllib2.Request(fwUrl)
                 handle = urllib2.urlopen(req)
             except urllib2.HTTPError, e:
-                print "UPER: Can't download firmware, error code - %s." % e.code
+                print("UPER: Can't download firmware, error code - %s." % e.code)
                 self._reset_uper()
                 return
             except urllib2.URLError:
-                print "UPER: Bad URL for firmware file: %s" % fwUrl
+                print("UPER: Bad URL for firmware file: %s" % fwUrl)
                 self._reset_uper()
                 return
             else:
@@ -72,7 +72,7 @@ class Upgrader:
                 block_device_name = try_device_name  # found UPER
                 break;
         if block_device_name == '':
-            print "UPER firmware upgrade error, no UPER was found."
+            print("UPER firmware upgrade error, no UPER was found.")
             return
 
         # os.system("dd if="+fw_file+" of="+new_dev_list[0]+" seek=4")

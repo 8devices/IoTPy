@@ -4,7 +4,7 @@ from time import sleep
 
 
 def on_rotation(direction, position):
-    print "Rotated by %i, current position is %i" % (direction, position)
+    print("Rotated by %i, current position is %i" % (direction, position))
 
 
 with UPER1() as board, \
