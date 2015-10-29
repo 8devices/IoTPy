@@ -36,8 +36,8 @@ class IoBoard:
                 ports_list = []
                 for i in xrange(256):
                     try:
-                        ser = serial.Serial(i)
-                        ports_list.append('COM' + str(i + 1))
+                        ser = serial.Serial('COM'+str(i))
+                        ports_list.append(ser.portstr)
                         ser.close()
                     except serial.SerialException:
                         pass
@@ -114,6 +114,7 @@ class IoBoard:
         :param output_buf:
         :return:
         """
+        #print(':'.join(hex(ord(n)) for n in output_buf))
         try:
             self.ser.write(output_buf)
         except:
@@ -124,6 +125,7 @@ class IoBoard:
                 data = self.outq.get(True, 1)
             except queue.Empty:
                 raise IoTPy_APIError("Nothing to read on serial port exception.")
+            #print('|'.join(hex(ord(n)) for n in data))
         return data
 
     def internalCallBack(self, interrupt_data):
@@ -177,48 +179,24 @@ class IoBoard:
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
-    def ADC(self, name, *args, **kwargs):
-        _names = {"ADC0": 23, "ADC1": 24, "ADC2": 25, "ADC3": 26, "ADC4": 30, "ADC5": 31, "ADC6": 32, "ADC7": 33}
-        if isinstance(name, int):
-            pin = name
-        elif isinstance(name, str):
-            if _names.has_key(name):
-                pin = _names[name]
-            else:
-                raise IoTPy_APIError("Invalid ADC name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
-        else:
-            raise IoTPy_APIError("ADC name must be an integer or a string")
-
+    def ADC(self, pin, *args, **kwargs):
         return IO_ADC(self, pin)
 
     def GPIO(self, name, *args, **kwargs):
         if not (isinstance(name, int) or isinstance(name, string_types)):
             raise IoTPy_APIError("GPIO name must be an integer.")
-
         return IO_GPIO(self, name)
 
     def GPIOPort(self, names, *args, **kwargs):
         for name in names:
             if not isinstance(name, int):
                 raise IoTPy_APIError("GPIO name must be an integer.")
-
         return IO_GPIOPort(self, names)
 
     def I2C(self, name, *args, **kwargs):
         return IO_I2C(self)
 
-    def PWM(self, name, freq=100, polarity=1, *args, **kwargs):
-        _names = {"PWM0_0": 27, "PWM0_1": 28, "PWM0_2": 34, "PWM1_0": 10, "PWM1_1": 39, "PWM1_2": 3}
-        if isinstance(name, int):
-            pin = name
-        elif isinstance(name, str):
-            if _names.has_key(name):
-                pin = _names[name]
-            else:
-                raise IoTPy_APIError("Invalid PWM name %s. Must be one of %s." % (name, ", ".join(sorted(_names.keys()))))
-        else:
-            raise IoTPy_APIError("PWM name must be an integer or a string")
-
+    def PWM(self, pin, freq=100, polarity=1, *args, **kwargs):
         return IO_PWM(self, pin, freq, polarity)
 
     def SPI(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):

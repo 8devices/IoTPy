@@ -199,3 +199,17 @@ LPCExpresso11U14REVA_PINOUT = IoPinout({
     'P1_16':    P1_16,
 })
 
+_8dev2300_PINOUT = IoPinout({
+    'DUT_RESET':    P1_16,
+    'DUT_POWER_EN': P0_7,
+    'SWITCH1':      P0_15,
+    'SWITCH2':      P0_17,
+    'A_CURRENT':    P0_16,
+    'BUZZER':       P1_15,
+    'USB_POWER_EN': P1_19,
+    'LED_R':        P1_25,
+    'LED_G':        P1_26,
+    'LED_B':        P1_24,
+})
+
+

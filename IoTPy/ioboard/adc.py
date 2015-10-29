@@ -1,6 +1,6 @@
 from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
 from IoTPy.ioboard.pinouts import CAP_ADC
-from IoTPy.ioboard.sfp import encode_sfp
+from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
 
 
 from IoTPy.core.adc import ADC
@@ -21,7 +21,7 @@ class IO_ADC(ADC):
         if self.board.pinout[pin].capabilities & CAP_ADC:
             self.logical_pin = self.board.pinout[pin].pinID
         else:
-            errmsg("IO API: Pin No:%d is not an ADC pin.", pin)
+            errmsg("IO API: Pin "+str(pin)+" is not an ADC pin.")
             raise IoTPy_APIError("Trying to assign ADC function to non ADC pin.")
         self.adc_pin = self.board.pinout[pin].extra[0]
         self.board.uper_io(0, encode_sfp(3, [self.logical_pin, 0]))  # set GPIO to HIGH_Z
@@ -50,4 +50,4 @@ class IO_ADC(ADC):
         :return: Raw ADC value.
         :rtype: int
         """
-        return self.board.decode_sfp(self.board.uper_io(1, encode_sfp(10, [self.adc_pin])))[1][1]
+        return decode_sfp(self.board.uper_io(1, encode_sfp(10, [self.adc_pin])))[1][1]

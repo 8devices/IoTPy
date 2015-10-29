@@ -25,10 +25,10 @@ class IO_GPIO(GPIO):
             raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
 
         # Configure default state to be input with pull-up resistor
+        self.board.uper_io(0, encode_sfp(1, [self.logical_pin]))  # set primary
         self.direction = GPIO.INPUT
         self.resistor = GPIO.PULL_UP
-        self.setup(self.direction, self.resistor)
-        self.board.uper_io(0, encode_sfp(1, [self.logical_pin]))  # set primary
+        self.setup(self.direction, self.resistor) # default GPIO pin state is INPUT and PULL_UP
 
     def __enter__(self):
         return self
@@ -78,7 +78,6 @@ class IO_GPIO(GPIO):
         """
         if self.direction != GPIO.OUTPUT:
             self.setup(GPIO.OUTPUT)
-
         self.board.uper_io(0, encode_sfp(4, [self.logical_pin, value]))
 
     def read(self):
@@ -88,7 +87,7 @@ class IO_GPIO(GPIO):
         :return: Digital signal value: 0 (LOW) or 1 (HIGH).
         :rtype: int
         """
-        if self.direction != self.INPUT:
+        if self.direction != GPIO.INPUT:
             self.setup(GPIO.INPUT, self.resistor)
         return decode_sfp(self.board.uper_io(1, encode_sfp(5, [self.logical_pin])))[1][1]
 
