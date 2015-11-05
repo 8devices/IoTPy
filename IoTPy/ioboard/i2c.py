@@ -16,13 +16,13 @@ class IO_I2C(I2C):
     def __init__(self, board, port=0):
         self.board = board
         self.port = port
-        self.board.uper_io(0, encode_sfp(40, []))
+        self.board.lowlevel_io(0, encode_sfp(40, []))
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.board.uper_io(0, encode_sfp(42, []))
+        self.board.lowlevel_io(0, encode_sfp(42, []))
 
     def scan(self):
         """
@@ -34,7 +34,7 @@ class IO_I2C(I2C):
         dev_list = []
         for address in xrange(1, 128):
             try:
-                result = self.board.uper_io(1, encode_sfp(41, [address, '', 0]))
+                result = self.board.lowlevel_io(1, encode_sfp(41, [address, '', 0]))
                 if result[-1] == 'X':
                     dev_list.append(address)
             except IoTPy_APIError:
@@ -67,7 +67,7 @@ class IO_I2C(I2C):
         """
 
         try:
-            result = decode_sfp(self.board.uper_io(1, encode_sfp(41, [address, write_data, read_length])))
+            result = decode_sfp(self.board.lowlevel_io(1, encode_sfp(41, [address, write_data, read_length])))
         except IoTPy_APIError:
             errmsg("UPER API: I2C bus not connected.")
             raise IoTPy_IOError("I2C bus not connected.")

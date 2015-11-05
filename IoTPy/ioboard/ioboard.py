@@ -107,7 +107,7 @@ class IoBoard:
         except:
             raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
 
-    def uper_io(self, ret, output_buf):
+    def lowlevel_io(self, ret, output_buf):
         """
 
         :param ret:
@@ -151,7 +151,7 @@ class IoBoard:
         :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
         """
         device_info = []
-        result = decode_sfp(self.uper_io(1, encode_sfp(255, [])))
+        result = decode_sfp(self.lowlevel_io(1, encode_sfp(255, [])))
         if result[0] != -1:
             errmsg("UPER error: get_device_info wrong code.")
             raise IoTPy_APIError("")
@@ -171,7 +171,7 @@ class IoBoard:
         """
         Perform software restart.
         """
-        self.uper_io(0, encode_sfp(251, []))
+        self.lowlevel_io(0, encode_sfp(251, []))
 
     def __enter__(self):
         return self

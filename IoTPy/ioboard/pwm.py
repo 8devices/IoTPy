@@ -1,5 +1,5 @@
 from IoTPy.core.pwm import PWM
-from IoTPy.ioboard.pinouts import CAP_PWM
+from IoTPy.ioboard.pinmaps import CAP_PWM
 from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
 from IoTPy.ioboard.sfp import encode_sfp
 
@@ -46,10 +46,10 @@ class IO_PWM(PWM):
     def __exit__(self, exc_type, exc_value, traceback):
         PWM_PORT_RUNNING[self.pwm_port]['channels'] -= 1
         self.primary = True
-        self.board.uper_io(0, encode_sfp(1, [self.logical_pin]))  # set pin primary function
+        self.board.lowlevel_io(0, encode_sfp(1, [self.logical_pin]))  # set pin primary function
         if PWM_PORT_RUNNING[self.pwm_port]['channels'] == 0:
             PWM_PORT_RUNNING[self.pwm_port]['period'] = 0
-            self.board.uper_io(0, encode_sfp(IO_PWM._PWM_PORT_FUNCTIONS[self.pwm_port][2], [self.pwm_pin]))
+            self.board.lowlevel_io(0, encode_sfp(IO_PWM._PWM_PORT_FUNCTIONS[self.pwm_port][2], [self.pwm_pin]))
 
     def set_frequency(self, freq):
         self.set_period(int(round(1e6/freq)))
@@ -64,7 +64,7 @@ class IO_PWM(PWM):
         """
         if 0 <= period_us <= self._PWM_PORT_MAX[self.pwm_port]:
             if PWM_PORT_RUNNING[self.pwm_port]['period'] != period_us:
-                self.board.uper_io(0, encode_sfp(self._PWM_PORT_FUNCTIONS[self.pwm_port][0], [period_us]))
+                self.board.lowlevel_io(0, encode_sfp(self._PWM_PORT_FUNCTIONS[self.pwm_port][0], [period_us]))
                 PWM_PORT_RUNNING[self.pwm_port]['period'] = period_us
         else:
             errmsg("UPER API: PWM period for port %d can be only between 0-%d" % (self.pwm_port, self._PWM_PORT_MAX[self.pwm_port]))
@@ -88,7 +88,7 @@ class IO_PWM(PWM):
         :raise: IoTPy_APIError
         """
         if self.primary:
-            self.board.uper_io(0, encode_sfp(2, [self.logical_pin]))  # set pin secondary function
+            self.board.lowlevel_io(0, encode_sfp(2, [self.logical_pin]))  # set pin secondary function
             self.primary = False
         if 0 <= pulse_us <= PWM_PORT_RUNNING[self.pwm_port]['period']:
             self.pulse_time = pulse_us
@@ -97,7 +97,7 @@ class IO_PWM(PWM):
             if self.polarity == 0:
                 high_time = PWM_PORT_RUNNING[self.pwm_port]['period'] - pulse_us
 
-            self.board.uper_io(0, encode_sfp(IO_PWM._PWM_PORT_FUNCTIONS[self.pwm_port][1], [self.pwm_pin, high_time]))
+            self.board.lowlevel_io(0, encode_sfp(IO_PWM._PWM_PORT_FUNCTIONS[self.pwm_port][1], [self.pwm_pin, high_time]))
         else:
             errmsg("UPER error: PWM high time is out of range on logical pin %d." % self.logical_pin)
             raise IoTPy_APIError("PWM high time is out of range.")
