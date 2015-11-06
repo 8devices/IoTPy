@@ -7,13 +7,12 @@ from IoTPy.ioboard.i2c import IO_I2C
 from IoTPy.ioboard.pwm import IO_PWM
 from IoTPy.ioboard.spi import IO_SPI
 from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
+from IoTPy.ioboard.transport import SerialTransport
+from IoTPy.ioboard.utils import errmsg, IoTPy_APIError
+
 from six import string_types
 import threading
 import queue
-import platform
-import glob
-import serial
-from IoTPy.ioboard.utils import errmsg, IoTPy_APIError
 
 __version__ = '0.01'
 
@@ -27,57 +26,15 @@ class IoBoard:
     :type serial_port: str
     """
 
-    def __init__(self, pinout, serial_port=None):
-        """__init__(self, pinout, serial_port=None)"""
-        ser = serial_port
-        if serial_port is None:
-            my_platform = platform.system()
-            if my_platform == "Windows":
-                ports_list = []
-                for i in xrange(256):
-                    try:
-                        ser = serial.Serial('COM'+str(i))
-                        ports_list.append(ser.portstr)
-                        ser.close()
-                    except serial.SerialException:
-                        pass
-            elif my_platform == "Darwin":
-                ports_list = glob.glob("/dev/tty.usbmodem*")
-            elif my_platform == "Linux":
-                ports_list = glob.glob("/dev/ttyACM*")
-
-            for my_port in ports_list:
-                try:
-                    port_to_try = serial.Serial(
-                        port=my_port,
-                        baudrate=230400,  #virtual com port on USB is always max speed
-                        parity=serial.PARITY_ODD,
-                        stopbits=serial.STOPBITS_ONE,
-                        bytesize=serial.EIGHTBITS,
-                        timeout=0.1
-                    )
-                    port_to_try.write(encode_sfp(255, []))
-                    uper_response = port_to_try.read(1)    # read one, blocking
-                    n = port_to_try.inWaiting()        # look if there is more
-                    if n:
-                        uper_response = uper_response + port_to_try.read(n)
-                        if decode_sfp(uper_response)[0] == 255:  # found port with UPER
-                            ser = port_to_try
-                            break
-                    port_to_try.close()
-                except:
-                    raise IoTPy_APIError("Unrecoverable serial port error.")
-
-        if not ser:
-            raise IoTPy_APIError("No UPER found on USB/serial ports.")
-
+    def __init__(self, pinout, io = None):
         self.interrupts = [None] * 8
         self.callbackdict = {}
-
-        self.ser = ser
-        self.ser.flush()
+        if not io:
+            io = SerialTransport()
+        self.io = io
+        self.io.flush()
         self.outq = queue.Queue()
-        self.reader = Reader(self.ser, self.outq, self.internalCallBack, decode_sfp)
+        self.reader = Reader(self.io, self.outq, self.internalCallBack, decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
@@ -102,8 +59,8 @@ class IoBoard:
         #    self.detachInterrupt(i)
         try:
             self.reader.stop()
-            self.ser.flush()
-            self.ser.close()
+            self.io.flush()
+            self.io.close()
         except:
             raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
 
@@ -116,7 +73,7 @@ class IoBoard:
         """
         #print(':'.join(hex(ord(n)) for n in output_buf))
         try:
-            self.ser.write(output_buf)
+            self.io.write(output_buf)
         except:
             raise IoTPy_APIError("Unrecoverable serial port writing error, dying.")
         data = None
@@ -124,7 +81,7 @@ class IoBoard:
             try:
                 data = self.outq.get(True, 1)
             except queue.Empty:
-                raise IoTPy_APIError("Nothing to read on serial port exception.")
+                raise IoTPy_APIError("IoTPy: Nothing to read on serial port exception.")
             #print('|'.join(hex(ord(n)) for n in data))
         return data
 
@@ -141,7 +98,7 @@ class IoBoard:
         try:
             callback_entry['callback'](interrupt_event, callback_entry['userobject'])
         except Exception as e:
-            errmsg("[UPER API] Interrupt callback exception: %s" % e)
+            errmsg("IoTPy Interrupt callback exception: %s" % e)
         return
 
     def get_device_info(self):
@@ -150,21 +107,24 @@ class IoBoard:
 
         :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
         """
-        device_info = []
         result = decode_sfp(self.lowlevel_io(1, encode_sfp(255, [])))
-        if result[0] != -1:
-            errmsg("UPER error: get_device_info wrong code.")
-            raise IoTPy_APIError("")
-        result = result[1]
-        if result[0] >> 24 != 0x55:  # 0x55 == 'U'
-            print("UPER error: getDeviceInfo unknown device/firmware type")
+
+        if result[0] != 255:
+            errmsg("IoTPy error: get_device_info wrong code.")
+            #raise IoTPy_APIError("")
+        device_data = result[1]
+
+        if device_data[0] >> 24 != 0x55:  # 0x55 = 'U'
+            print("IoTPy error: getDeviceInfo unknown device/firmware type")
             return
-        device_info.append("UPER")  # type
-        device_info.append((result[0] & 0x00ff0000) >> 16) #fw major
-        device_info.append(result[0] & 0x0000ffff) #fw minor
-        device_info.append(result[1]) # 16 bytes long unique ID from UPER CPU
-        device_info.append(result[2]) # UPER LPC CPU part number
-        device_info.append(result[3]) # UPER LPC CPU bootload code version
+
+        device_info = []
+        #device_info.append("UPER")  # type
+        device_info.append((device_data[0] & 0x00ff0000) >> 16) #fw major
+        device_info.append(device_data[0] & 0x0000ffff) #fw minor
+        device_info.append(device_data[1]) # 16 bytes long unique ID from UPER CPU
+        device_info.append(device_data[2]) # UPER LPC CPU part number
+        device_info.append(device_data[3]) # UPER LPC CPU bootload code version
         return device_info
 
     def reset(self):
@@ -217,8 +177,8 @@ class IoBoard:
 
 
 class Reader:
-    def __init__(self, serial, outq, callback, decodefun):
-        self.serial = serial
+    def __init__(self, io, outq, callback, decodefun):
+        self.io = io
         self.outq = outq
         self.callback = callback
         self.alive = True
@@ -250,10 +210,7 @@ class Reader:
     def reader(self):
         while self.alive:
             try:
-                data = self.serial.read(1)              #read one, blocking
-                n = self.serial.inWaiting()             #look if there is more
-                if n:
-                    data = data + self.serial.read(n)   #and get as much as possible
+                data = self.io.read()
                 if data:
                     if data[3:4] == b'\x08':               #check if it's interrupt event
                         interrupt = self.decodefun(data)
@@ -264,7 +221,6 @@ class Reader:
                         self.outq.put(data)
             except:
                 errmsg("UPER API: serial port reading error.")
-                #raise APIError("Serial port reading error.")
                 break
         self.alive = False
 

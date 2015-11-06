@@ -6,3 +6,5 @@ with LPCexpresso() as board, board.GPIO('P0_23') as pin:
     print(pin.read())
     print(pin.read())
     print(pin.read())
+
+    print(board.get_device_info())
