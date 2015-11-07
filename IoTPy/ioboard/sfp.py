@@ -1,8 +1,7 @@
-from IoTPy.ioboard.utils import IoTPy_APIError
+from utils import IoTPy_APIError
 from builtins import chr
 from six import binary_type, integer_types
 import struct
-import types
 
 
 def _encode_int(intarg):

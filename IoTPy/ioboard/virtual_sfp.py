@@ -40,7 +40,7 @@ LPCExpresso11U14REVA_PINOUT = IoPinout({
 })
 
 
-class LPCexpresso(IoBoard):
+class VirtualSFP(IoBoard):
 
-    def __init__(self, io):
-        IoBoard.__init__(self, LPCExpresso11U14REVA_PINOUT, io)
+    def __init__(self, transport):
+        IoBoard.__init__(self, LPCExpresso11U14REVA_PINOUT, transport )

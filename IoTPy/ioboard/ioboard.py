@@ -32,7 +32,6 @@ class IoBoard:
         if not io:
             io = SerialTransport()
         self.io = io
-        self.io.flush()
         self.outq = queue.Queue()
         self.reader = Reader(self.io, self.outq, self.internalCallBack, decode_sfp)
 
@@ -59,7 +58,6 @@ class IoBoard:
         #    self.detachInterrupt(i)
         try:
             self.reader.stop()
-            self.io.flush()
             self.io.close()
         except:
             raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")

@@ -1,14 +1,19 @@
-import sys, os
+import sys
+import os
 
 
 class IoTPy_APIError(Exception):
     pass
 
+
 class IoTPy_IOError(Exception):
     pass
 
+
 class IoTPy_ThingError(Exception):
     pass
+
+
 
 def errmsg(fmt, *args):
     if not fmt.endswith('\n'):
@@ -33,5 +38,8 @@ def die(fmt, *args):
         sys.stderr.write(fmt)
     sys.stderr.flush()
     sys.exit(1)
+
+
+
 
 

@@ -1,6 +1,7 @@
 from time import sleep
 from IoTPy.core.gpio import GPIO
 from IoTPy.ioboard.lpcexpresso11u14 import LPCexpresso
+from IoTPy.ioboard.transport import SocketTransport
 
 
 def button_callback(event, obj):
@@ -9,8 +10,8 @@ def button_callback(event, obj):
 
     button_state = (event['values'] >> event['id']) & 0x1
     obj['led'].write(button_state)
-
-with LPCexpresso() as board, board.GPIO('P0_7') as redPin, board.GPIO('P0_23') as buttonPin:
+io = SocketTransport()
+with LPCexpresso(io) as board, board.GPIO('P0_7') as redPin, board.GPIO('P0_23') as buttonPin:
     my_object = {'led': redPin, 'counter': 0}
     buttonPin.attach_irq(GPIO.CHANGE, button_callback, my_object)
 
