@@ -14,7 +14,6 @@ class IoTPy_ThingError(Exception):
     pass
 
 
-
 def errmsg(fmt, *args):
     if not fmt.endswith('\n'):
         fmt += '\n'

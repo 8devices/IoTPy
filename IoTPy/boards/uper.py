@@ -46,5 +46,5 @@ UPER1_PINOUT = IoPinout({
 
 class UPER1(IoBoard):
 
-    def __init__(self, serial_port=None):
-        IoBoard.__init__(self, UPER1_PINOUT, serial_port)
+    def __init__(self, io=None):
+        IoBoard.__init__(self, UPER1_PINOUT, io)

@@ -1,9 +1,8 @@
-from IoTPy.ioboard.utils import IoTPy_IOError, IoTPy_APIError, errmsg
-from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
-from IoTPy.core.i2c import I2C
+from IoTPy.errors import IoTPy_IOError, IoTPy_APIError, errmsg
+from IoTPy.sfp import encode_sfp, decode_sfp
 
 
-class IO_I2C(I2C):
+class I2C(object):
     """
     I2C communication module.
 

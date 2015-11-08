@@ -1,9 +1,10 @@
 from colorsys import hls_to_rgb
 from time import sleep
-from IoTPy.ioboard.uper import UPER1
+
+from IoTPy.boards.uper import UPER1
 
 with UPER1() as board, \
-        board.PWM(27, polarity=0) as redPin, board.PWM(28, polarity=0) as greenPin, board.PWM(34, polarity=0) as bluePin:
+        board.pwm(27, polarity=0) as redPin, board.pwm(28, polarity=0) as greenPin, board.pwm(34, polarity=0) as bluePin:
 
     while True:
         for color in xrange(500):

@@ -1,11 +1,10 @@
-from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
-from IoTPy.ioboard.pinmaps import CAP_GPIO
-from IoTPy.core.gpio import GPIO
-from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
+from IoTPy.errors import IoTPy_APIError, errmsg
+from IoTPy.pinmaps import CAP_GPIO
+from IoTPy.sfp import encode_sfp, decode_sfp
 import struct
 
 
-class IO_GPIO(GPIO):
+class GPIO(object):
     """
     GPIO (General Purpose Input and Output) pin module.
 
@@ -15,6 +14,26 @@ class IO_GPIO(GPIO):
     :type pin: int
     :raise: IoTPy_APIError
     """
+    # digital pin directions
+    INPUT = 0
+    """ INPUT direction constant"""
+    OUTPUT = 1
+    """ OUTPUT direction constant"""
+
+    # GPIO resistors
+    HIGH_Z = NONE = 0
+    """ no-pull (high-z) resistor constant """
+    PULL_UP = 1
+    """ pull-up resistor constant """
+    PULL_DOWN = 2
+    """ pull-down resistor constant """
+
+    # digital pin events
+    LOW = 0
+    HIGH = 1
+    CHANGE = 2
+    RISE = 3
+    FALL = 4
 
     def __init__(self, board, pin):
         self.board = board
@@ -26,8 +45,8 @@ class IO_GPIO(GPIO):
 
         # Configure default state to be input with pull-up resistor
         self.board.lowlevel_io(0, encode_sfp(1, [self.logical_pin]))  # set primary
-        self.direction = GPIO.INPUT
-        self.resistor = GPIO.PULL_UP
+        self.direction = self.INPUT
+        self.resistor = self.PULL_UP
         self.setup(self.direction, self.resistor) # default GPIO pin state is INPUT and PULL_UP
 
     def __enter__(self):
@@ -37,7 +56,7 @@ class IO_GPIO(GPIO):
         self.detach_irq()
         pass
 
-    def setup(self, direction, resistor=GPIO.PULL_UP):
+    def setup(self, direction, resistor=PULL_UP):
         """
         Configure GPIO.
 
@@ -47,20 +66,20 @@ class IO_GPIO(GPIO):
 
         :raise: IoTPy_APIError
         """
-        if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
-            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+        if not direction in [self.OUTPUT, self.INPUT]:
+            raise IoTPy_APIError("Invalid digital pin direction. Should be INPUT or OUTPUT")
 
-        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
-            raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
+        if direction == self.INPUT and not resistor in [self.NONE, self.PULL_UP, self.PULL_DOWN]:
+            raise IoTPy_APIError("Invalid digital pin resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
-        if direction == GPIO.INPUT:
+        if direction == self.INPUT:
             self.resistor = resistor
 
-            if resistor == GPIO.PULL_UP:
+            if resistor == self.PULL_UP:
                 mode = 4  # PULL_UP
-            elif resistor == GPIO.PULL_DOWN:
+            elif resistor == self.PULL_DOWN:
                 mode = 2  # PULL_DOWN
             else:
                 mode = 0  # HIGH_Z
@@ -76,8 +95,8 @@ class IO_GPIO(GPIO):
         :param value: Digital output value (0 or 1)
         :type value: int
         """
-        if self.direction != GPIO.OUTPUT:
-            self.setup(GPIO.OUTPUT)
+        if self.direction != self.OUTPUT:
+            self.setup(self.OUTPUT)
         self.board.lowlevel_io(0, encode_sfp(4, [self.logical_pin, value]))
 
     def read(self):
@@ -87,8 +106,8 @@ class IO_GPIO(GPIO):
         :return: Digital signal value: 0 (LOW) or 1 (HIGH).
         :rtype: int
         """
-        if self.direction != GPIO.INPUT:
-            self.setup(GPIO.INPUT, self.resistor)
+        if self.direction != self.INPUT:
+            self.setup(self.INPUT, self.resistor)
         return decode_sfp(self.board.lowlevel_io(1, encode_sfp(5, [self.logical_pin])))[1][1]
 
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
@@ -149,14 +168,14 @@ class IO_GPIO(GPIO):
     def clear_irq_count(self, clear_to=0):
         raise NotImplementedError()
 
-    def read_pulse(self, level=GPIO.HIGH, timeout=100000):
+    def read_pulse(self, level=HIGH, timeout=100000):
         if self.direction != self.INPUT:
-            self.setup(GPIO.INPUT, self.resistor)
+            self.setup(self.INPUT, self.resistor)
 
         return decode_sfp(self.board.lowlevel_io(1, encode_sfp(9, [self.logical_pin, level, timeout])))[1][0]
 
 
-class IO_GPIOPort(GPIO):
+class GPIOPort(object):
     """
     GPIOPort (General Purpose Input and Output) port module.
 
@@ -190,20 +209,20 @@ class IO_GPIOPort(GPIO):
         pass
 
     def setup(self, direction, resistor=GPIO.PULL_UP):
-        if not direction in [GPIO.OUTPUT, GPIO.INPUT]:
-            raise IoTPy_APIError("Invalid GPIO direction. Should be GPIO.INPUT or GPIO.OUTPUT")
+        if not direction in [self.OUTPUT, self.INPUT]:
+            raise IoTPy_APIError("Invalid digital pin direction. Should be INPUT or OUTPUT")
 
-        if direction == GPIO.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
+        if direction == self.INPUT and not resistor in [GPIO.NONE, GPIO.PULL_UP, GPIO.PULL_DOWN]:
             raise IoTPy_APIError("Invalid GPIO resistor setting. Should be GPIO.NONE, GPIO.PULL_UP or GPIO.PULL_DOWN")
 
         self.direction = direction
 
-        if direction == GPIO.INPUT:
+        if direction == self.INPUT:
             self.resistor = resistor
 
-            if resistor == GPIO.PULL_UP:
+            if resistor == self.PULL_UP:
                 mode = 4  # PULL_UP
-            elif resistor == GPIO.PULL_DOWN:
+            elif resistor == self.PULL_DOWN:
                 mode = 2  # PULL_DOWN
             else:
                 mode = 0  # HIGH_Z

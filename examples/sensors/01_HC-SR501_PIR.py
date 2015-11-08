@@ -1,6 +1,8 @@
 from time import sleep
-from IoTPy.core.gpio import GPIO
-from IoTPy.ioboard.uper import UPER1
+
+from IoTPy.interfaces.gpio import GPIO
+
+from IoTPy.boards.uper import UPER1
 
 
 def pir_callback(event, obj):
@@ -14,7 +16,7 @@ def pir_callback(event, obj):
     else:
         print("Unknown event")
 
-with UPER1() as board, board.GPIO(27) as led, board.GPIO(18) as button:
+with UPER1() as board, board.digital(27) as led, board.digital(18) as button:
 
     button.setup(GPIO.INPUT, GPIO.PULL_UP)
     button.attach_irq(GPIO.CHANGE, pir_callback, led)

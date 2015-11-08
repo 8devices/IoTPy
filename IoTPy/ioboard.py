@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from IoTPy.core.spi import SPI
-from IoTPy.ioboard.adc import IO_ADC
-from IoTPy.ioboard.gpio import IO_GPIO, IO_GPIOPort
-from IoTPy.ioboard.i2c import IO_I2C
-from IoTPy.ioboard.pwm import IO_PWM
-from IoTPy.ioboard.spi import IO_SPI
-from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
-from IoTPy.ioboard.transport import SerialTransport
-from IoTPy.ioboard.utils import errmsg, IoTPy_APIError
-
-from six import string_types
 import threading
+
 import queue
+from IoTPy.interfaces.adc import ADC
+from IoTPy.interfaces.gpio import GPIO, GPIOPort
+from IoTPy.interfaces.pwm import PWM
+from IoTPy.interfaces.spi import SPI
+from six import string_types
+
+from IoTPy.interfaces.i2c import I2C
+from IoTPy.sfp import encode_sfp, decode_sfp
+from IoTPy.transport import SerialTransport
+from IoTPy.errors import errmsg, IoTPy_APIError
 
 __version__ = '0.01'
 
@@ -69,7 +69,7 @@ class IoBoard:
         :param output_buf:
         :return:
         """
-        #print(':'.join(hex(ord(n)) for n in output_buf))
+        print(':'.join(hex(ord(n)) for n in output_buf))
         try:
             self.io.write(output_buf)
         except:
@@ -80,7 +80,7 @@ class IoBoard:
                 data = self.outq.get(True, 1)
             except queue.Empty:
                 raise IoTPy_APIError("IoTPy: Nothing to read on serial port exception.")
-            #print('|'.join(hex(ord(n)) for n in data))
+            print('|'.join(hex(ord(n)) for n in data))
         return data
 
     def internalCallBack(self, interrupt_data):
@@ -137,27 +137,27 @@ class IoBoard:
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
-    def ADC(self, pin, *args, **kwargs):
-        return IO_ADC(self, pin)
+    def analog(self, pin, *args, **kwargs):
+        return ADC(self, pin)
 
-    def GPIO(self, name, *args, **kwargs):
+    def digital(self, name, *args, **kwargs):
         if not (isinstance(name, int) or isinstance(name, string_types)):
             raise IoTPy_APIError("GPIO name must be an integer.")
-        return IO_GPIO(self, name)
+        return GPIO(self, name)
 
-    def GPIOPort(self, names, *args, **kwargs):
+    def digital_port(self, names, *args, **kwargs):
         for name in names:
             if not isinstance(name, int):
                 raise IoTPy_APIError("GPIO name must be an integer.")
-        return IO_GPIOPort(self, names)
+        return GPIOPort(self, names)
 
-    def I2C(self, name, *args, **kwargs):
-        return IO_I2C(self)
+    def i2c(self, name, *args, **kwargs):
+        return I2C(self)
 
-    def PWM(self, pin, freq=100, polarity=1, *args, **kwargs):
-        return IO_PWM(self, pin, freq, polarity)
+    def pwm(self, pin, freq=100, polarity=1, *args, **kwargs):
+        return PWM(self, pin, freq, polarity)
 
-    def SPI(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):
+    def spi(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):
         _names = {"SPI0": 0, "SPI1": 1}
         if isinstance(name, int):
             port = name
@@ -171,7 +171,7 @@ class IoBoard:
 
         divider = int(round(2.0e6/clock))
 
-        return IO_SPI(self, port, divider, mode)
+        return SPI(self, port, divider, mode)
 
 
 class Reader:

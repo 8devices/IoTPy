@@ -1,14 +1,11 @@
-from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
-from IoTPy.ioboard.pinmaps import CAP_ADC
-from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
+from IoTPy.errors import IoTPy_APIError, errmsg
+from IoTPy.pinmaps import CAP_ADC
+from IoTPy.sfp import encode_sfp, decode_sfp
 
 
-from IoTPy.core.adc import ADC
-
-
-class IO_ADC(ADC):
+class ADC(object):
     """
-    IO_ADC (Analog to Digital Converter) pin module.
+    ADC (Analog to Digital Converter) pin module.
 
     :param board: IoBoard to which the pin belongs to.
     :type board: :class:`IoTPy.pyuper.ioboard.IoBoard`

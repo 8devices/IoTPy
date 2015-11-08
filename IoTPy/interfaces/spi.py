@@ -1,9 +1,8 @@
-from IoTPy.ioboard.utils import IoTPy_APIError, errmsg
-from IoTPy.ioboard.sfp import encode_sfp, decode_sfp
-from IoTPy.core.spi import SPI
+from IoTPy.errors import IoTPy_APIError, errmsg
+from IoTPy.sfp import encode_sfp, decode_sfp
 
 
-class IO_SPI(SPI):
+class SPI(object):
     """
     SPI communication module.
 
@@ -17,7 +16,12 @@ class IO_SPI(SPI):
     :type mode: int
     """
 
-    def __init__(self, board, port=0, divider=1, mode=SPI.MODE_0):
+    MODE_0 = 0
+    MODE_1 = 1
+    MODE_2 = 2
+    MODE_3 = 3
+
+    def __init__(self, board, port=0, divider=1, mode=MODE_0):
         divider = min(max(divider, 1), 256)
 
         self.board = board

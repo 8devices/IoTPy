@@ -1,4 +1,4 @@
-from utils import IoTPy_APIError
+from errors import IoTPy_APIError
 from builtins import chr
 from six import binary_type, integer_types
 import struct

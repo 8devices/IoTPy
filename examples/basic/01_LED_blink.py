@@ -1,5 +1,5 @@
 from time import sleep
-from IoTPy.core.gpio import GPIO
+from IoTPy.interfaces.gpio import GPIO
 
 _UPER1 = 1
 _LPCexpresso = 2
@@ -7,15 +7,15 @@ _LPCexpresso = 2
 ioBoardType = _LPCexpresso
 
 if ioBoardType == _UPER1:
-    from IoTPy.ioboard.uper import UPER1 as ioBoard
+    from IoTPy.boards.uper import UPER1 as ioBoard
     LED_PIN_ID = 27
 if ioBoardType == _LPCexpresso:
-    from IoTPy.ioboard.lpcexpresso11u14 import LPCexpresso as ioBoard
+    from IoTPy.boards.lpcexpresso11u14 import LPCexpresso as ioBoard
     LED_PIN_ID = 'P0_7'
 
 # This is platform dependent - please configure to your application
 
-with ioBoard() as board, board.GPIO(LED_PIN_ID) as ledPin:
+with ioBoard() as board, board.digital(LED_PIN_ID) as ledPin:
 
     ledPin.setup(GPIO.OUTPUT)  # set GPIO pin to be output
 

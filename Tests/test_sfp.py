@@ -1,5 +1,5 @@
 import unittest
-import IoTPy.ioboard.sfp as sfp
+import IoTPy.sfp as sfp
 
 
 class Test_sfp(unittest.TestCase):

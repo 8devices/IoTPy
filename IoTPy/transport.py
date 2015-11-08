@@ -1,5 +1,5 @@
 import socket
-from IoTPy.ioboard.detect_sfp_serial import detect_sfp_serial
+from IoTPy.detect_sfp_serial import detect_sfp_serial
 
 
 class SocketTransport(object):

@@ -38,5 +38,5 @@ WEIO_PINOUT = IoPinout({
 
 class WeIO(IoBoard):
 
-    def __init__(self, serial_port=None):
-        IoBoard.__init__(self, WEIO_PINOUT, serial_port)
+    def __init__(self, io=None):
+        IoBoard.__init__(self, WEIO_PINOUT, io)

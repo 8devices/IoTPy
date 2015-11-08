@@ -17,5 +17,5 @@ _8dev2300_PINOUT = IoPinout({
 
 class _8dev2300(IoBoard):
 
-    def __init__(self, serial_port=None):
-        IoBoard.__init__(self, _8dev2300_PINOUT, serial_port)
+    def __init__(self, io=None):
+        IoBoard.__init__(self, _8dev2300_PINOUT, io)

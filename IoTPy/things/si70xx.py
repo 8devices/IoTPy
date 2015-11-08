@@ -1,5 +1,5 @@
 from struct import unpack
-from IoTPy.ioboard.utils import IoTPy_ThingError
+from IoTPy.ioboard.errors import IoTPy_ThingError
 
 
 SI70xx_CMD_RH_HOLD      = '\xE5'  # RH hold master mode

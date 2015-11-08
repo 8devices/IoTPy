@@ -2,7 +2,7 @@ import platform
 import glob
 import serial
 from sfp import encode_sfp, decode_sfp
-from utils import IoTPy_APIError
+from errors import IoTPy_APIError
 
 
 def detect_sfp_serial():

@@ -1,13 +1,13 @@
 from time import sleep
-from IoTPy.core.gpio import GPIO
-from IoTPy.ioboard.lpcexpresso11u14 import LPCexpresso
-from IoTPy.ioboard.transport import SocketTransport, SerialTransport
+from IoTPy.boards.lpcexpresso11u14 import LPCexpresso
+from IoTPy.interfaces.gpio import GPIO
+from IoTPy.transport import SerialTransport, SocketTransport
 
 # This is platform dependent - please configure to your application
 LED_PIN_ID = 'P0_7'
-io = SerialTransport()
-with LPCexpresso(io) as board, board.GPIO(LED_PIN_ID) as ledPin:
-    ledPin.setup(GPIO.OUTPUT)  # set GPIO pin to be output
+io = SocketTransport()
+with LPCexpresso(io) as board, board.digital(LED_PIN_ID) as ledPin:
+    ledPin.setup(GPIO.OUTPUT)  # set digital pin to be output
     try:
         while True:
             ledPin.write(1)  # Turn led ON

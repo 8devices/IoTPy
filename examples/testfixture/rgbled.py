@@ -1,10 +1,11 @@
 from colorsys import hls_to_rgb
 from time import sleep
-from IoTPy.ioboard.lpcexpresso11u14 import LPCexpresso as ioBoard
+
+from IoTPy.ioboard.boards.lpcexpresso11u14 import LPCexpresso as ioBoard
 
 with ioBoard() as board, \
-        board.PWM('P1_25', polarity=0) as redPin, board.PWM('P1_26', polarity=0) as greenPin, \
-        board.PWM('P1_24', polarity=0) as bluePin, board.PWM('P1_15', polarity=0) as buzzerPin:
+        board.pwm('P1_25', polarity=0) as redPin, board.pwm('P1_26', polarity=0) as greenPin, \
+        board.pwm('P1_24', polarity=0) as bluePin, board.pwm('P1_15', polarity=0) as buzzerPin:
 
     buzzerPin.set_frequency(440)
     buzzerPin.set_duty_cycle(70)

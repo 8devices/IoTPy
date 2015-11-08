@@ -1,7 +1,8 @@
-from IoTPy.core.gpio import GPIO
-from IoTPy.ioboard.uper import UPER1
+from IoTPy.interfaces.gpio import GPIO
 
-with UPER1() as board, board.GPIO(27) as redPin, board.GPIO(18) as buttonPin:
+from IoTPy.boards.uper import UPER1
+
+with UPER1() as board, board.digital(27) as redPin, board.digital(18) as buttonPin:
 
     buttonPin.setup(GPIO.INPUT, GPIO.PULL_UP)
     redPin.setup(GPIO.OUTPUT)

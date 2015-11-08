@@ -1,9 +1,10 @@
 from colorsys import hls_to_rgb
-from IoTPy.ioboard.uper import UPER1
+
+from IoTPy.boards.uper import UPER1
 
 with UPER1() as board, \
-        board.ADC("ADC0") as adcPin1, board.ADC("ADC1") as adcPin2, \
-        board.PWM("PWM0_0") as redPin, board.PWM("PWM0_1") as greenPin, board.PWM("PWM0_2") as bluePin:
+        board.analog("ADC0") as adcPin1, board.analog("ADC1") as adcPin2, \
+        board.pwm("PWM0_0") as redPin, board.pwm("PWM0_1") as greenPin, board.pwm("PWM0_2") as bluePin:
 
     while True:
         hue = adcPin1.read()

@@ -1,5 +1,5 @@
-from IoTPy.ioboard.ioboard import IoBoard
-from IoTPy.ioboard.pinmaps import *
+from IoTPy.ioboard import IoBoard
+from IoTPy.pinmaps import *
 
 LPCExpresso11U14REVA_PINOUT = IoPinout({
     1: P_GND,
@@ -40,7 +40,7 @@ LPCExpresso11U14REVA_PINOUT = IoPinout({
 })
 
 
-class VirtualSFP(IoBoard):
+class LPCexpresso(IoBoard):
 
-    def __init__(self, transport):
-        IoBoard.__init__(self, LPCExpresso11U14REVA_PINOUT, transport )
+    def __init__(self, io=None):
+        IoBoard.__init__(self, LPCExpresso11U14REVA_PINOUT, io)
