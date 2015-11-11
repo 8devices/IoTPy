@@ -1,5 +1,4 @@
 # based on pyserial example
-
 import sys
 import threading
 import socket

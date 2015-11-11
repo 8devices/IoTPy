@@ -16,6 +16,7 @@ from IoTPy.errors import errmsg, IoTPy_APIError
 
 __version__ = '0.01'
 
+
 class IoBoard:
     """
     Micro controller based IO board with serial over USB class.
@@ -56,11 +57,8 @@ class IoBoard:
 
         #for i in range(7):
         #    self.detachInterrupt(i)
-        try:
-            self.reader.stop()
-            self.io.close()
-        except:
-            raise IoTPy_APIError("UPER API: Serial/USB port disconnected.")
+        self.reader.stop()
+
 
     def lowlevel_io(self, ret, output_buf):
         """
@@ -69,7 +67,7 @@ class IoBoard:
         :param output_buf:
         :return:
         """
-        print(':'.join(hex(ord(n)) for n in output_buf))
+        #print(':'.join(hex(ord(n)) for n in output_buf))
         try:
             self.io.write(output_buf)
         except:
@@ -80,7 +78,7 @@ class IoBoard:
                 data = self.outq.get(True, 1)
             except queue.Empty:
                 raise IoTPy_APIError("IoTPy: Nothing to read on serial port exception.")
-            print('|'.join(hex(ord(n)) for n in data))
+            #print('|'.join(hex(ord(n)) for n in data))
         return data
 
     def internalCallBack(self, interrupt_data):
@@ -105,16 +103,16 @@ class IoBoard:
 
         :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
         """
-        result = decode_sfp(self.lowlevel_io(1, encode_sfp(255, [])))
+        sfp_code, args = decode_sfp(self.lowlevel_io(1, encode_sfp(255, [])))
 
-        if result[0] != 255:
+        if sfp_code != 255:
             errmsg("IoTPy error: get_device_info wrong code.")
             #raise IoTPy_APIError("")
-        device_data = result[1]
+        device_data = args
 
         if device_data[0] >> 24 != 0x55:  # 0x55 = 'U'
             print("IoTPy error: getDeviceInfo unknown device/firmware type")
-            return
+            #return
 
         device_info = []
         #device_info.append("UPER")  # type
@@ -201,7 +199,7 @@ class Reader:
                     try:
                         self.callback(interrupt[1])
                     except Exception as e:
-                        errmsg("UPER API: Interrupt callback error (%s)" % e)
+                        errmsg("IoTPy: Interrupt callback error (%s)" % e)
 
         self.alive = False
 
@@ -225,5 +223,6 @@ class Reader:
     def stop(self):
         if self.alive:
             self.alive = False
+            self.io.close()
             self.thread_irq.join()
             self.thread_read.join()

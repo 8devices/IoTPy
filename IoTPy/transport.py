@@ -1,4 +1,4 @@
-import socket
+import socket, time
 from IoTPy.detect_sfp_serial import detect_sfp_serial
 
 
@@ -17,7 +17,13 @@ class SocketTransport(object):
         self.socket.send(data)
 
     def close(self):
+        self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.socket.shutdown(socket.SHUT_RDWR)
+        self.socket.close()
+
 
 
 class SerialTransport(object):

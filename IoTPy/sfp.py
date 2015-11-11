@@ -49,17 +49,17 @@ def decode_sfp(buffer):
     Decode SFP command from byte buffer.
 
     :param buffer: A byte buffer which stores SFP command.
-    :type buffer: str
-    :return: A list containing decoded SFP function ID and arguments (if any).
+    :type buffer: bytes string
+    :return: SFP function ID and arguments list.
     """
-    result = []
     if buffer[0:1] != b'\xd4':
-        return result
-    buflen = struct.unpack('>H', buffer[1:3])[0] + 3    # get SFP msg lenght
-    result.append(struct.unpack('B', buffer[3:4])[0])   # get SFP command code
+        return
+    command_length = struct.unpack('>H', buffer[1:3])[0] + 3    # get SFP msg lenght located in two bytes
+    sfp_command = struct.unpack('B', buffer[3:4])[0]            # get SFP command code
     pointer = 4
     args = []
-    while pointer < buflen:
+    while pointer < command_length:
+
         argtype = ord(buffer[pointer:pointer + 1])
         pointer += 1
         if argtype < 64:                    # short int
@@ -91,5 +91,4 @@ def decode_sfp(buffer):
                 pointer += 1
                 args.append(buffer[pointer:pointer + arglen])
                 pointer += arglen
-    result.append(args)
-    return result
+    return sfp_command, args
