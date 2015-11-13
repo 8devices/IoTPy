@@ -1,6 +1,8 @@
 import socket
 import sys
-from IoTPy.SFPprocessor import SfpMachine
+from time import sleep
+from IoTPy.sfp_processor import SfpMachine
+from IoTPy.sfp import command_slicer
 
 HOST = None              # Symbolic name meaning all available interfaces
 PORT = 7777              # Arbitrary non-privileged port
@@ -30,14 +32,22 @@ if s is None:
 while True:
     conn, addr = s.accept()
     print('Connected by', addr)
+    data = b''
     while True:
-        data = conn.recv(1024)
-        if not data:
+        received_data = conn.recv(1024)
+
+        if not received_data:
             break
-        command_list = data.split(b'\xd4')
-        command_list.remove('')
+
+        data += received_data
+        data, command_list = command_slicer(data)
+
         for sfp_command in command_list:
-            sfp_machine_result = sfp_machine_instance.execute_sfp(b'\xd4'+sfp_command)
+            sfp_machine_result = sfp_machine_instance.execute_sfp(sfp_command)
             if sfp_machine_result:
                 conn.send(sfp_machine_result)
+    sleep(1)
     conn.close()
+    print("Closing connection.")
+
+

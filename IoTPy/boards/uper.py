@@ -1,5 +1,5 @@
-from IoTPy.ioboard.ioboard import IoBoard
-from IoTPy.ioboard.pinmaps import *
+from IoTPy.ioboard import IoBoard
+from IoTPy.pinmaps import *
 
 UPER1_PINOUT = IoPinout({
     1: P0_20,

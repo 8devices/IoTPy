@@ -10,7 +10,7 @@ from IoTPy.interfaces.spi import SPI
 from six import string_types
 
 from IoTPy.interfaces.i2c import I2C
-from IoTPy.sfp import encode_sfp, decode_sfp
+from IoTPy.sfp import encode_sfp, decode_sfp, command_slicer
 from IoTPy.transport import SerialTransport
 from IoTPy.errors import errmsg, IoTPy_APIError
 
@@ -204,19 +204,27 @@ class Reader:
         self.alive = False
 
     def reader(self):
+        data = b''
         while self.alive:
             try:
-                data = self.io.read()
-                if data:
-                    if data[3:4] == b'\x08':               #check if it's interrupt event
-                        interrupt = self.decodefun(data)
+
+                received_data = self.io.read()
+                if not received_data:
+                    print("nuliniai duomenys")
+                    break
+                data += received_data
+                data, command_list = command_slicer(data)
+
+                for sfp_command in command_list:
+                    if sfp_command[3:4] == b'\x08':               #check if it's interrupt event
+                        interrupt = self.decodefun(sfp_command)
                         with self.irq_available:
                             self.irq_requests.append(interrupt)
                             self.irq_available.notify()
                     else:
-                        self.outq.put(data)
-            except:
-                errmsg("UPER API: serial port reading error.")
+                        self.outq.put(sfp_command)
+            except IoTPy_APIError as e:
+                errmsg("UPER API: serial port reading error. %s" % e)
                 break
         self.alive = False
 

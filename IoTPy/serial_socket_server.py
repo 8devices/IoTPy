@@ -2,7 +2,7 @@
 import sys
 import threading
 import socket
-from detect_sfp_serial import detect_sfp_serial
+from IoTPy.detect_sfp_serial import detect_sfp_serial
 
 
 class Redirector:
@@ -31,7 +31,7 @@ class Redirector:
                         self.socket.sendall(data)           # send it over TCP
                     finally:
                         self._write_lock.release()
-            except socket.error, msg:
+            except socket.error as msg:
                 sys.stderr.write('ERROR: %s\n' % msg)
                 # probably got disconnected
                 break
@@ -53,7 +53,7 @@ class Redirector:
                 if not data:
                     break
                 self.serial.write(data)                 # get a bunch of bytes and send them
-            except socket.error, msg:
+            except socket.error as msg:
                 sys.stderr.write('ERROR: %s\n' % msg)
                 # probably got disconnected
                 break
@@ -82,6 +82,6 @@ while True:
         connection.close()
     except KeyboardInterrupt:
         break
-    except socket.error, msg:
+    except socket.error as msg:
         sys.stderr.write('ERROR: %s\n' % msg)
 sys.stderr.write('\n--- exit ---\n')

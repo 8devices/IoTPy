@@ -5,7 +5,7 @@ from IoTPy.transport import SerialTransport, SocketTransport
 
 # This is platform dependent - please configure to your application
 LED_PIN_ID = 'P0_7'
-io = SocketTransport()
+io = SerialTransport()
 with LPCexpresso(io) as board, board.digital(LED_PIN_ID) as ledPin:
     ledPin.setup(GPIO.OUTPUT)  # set digital pin to be output
     try:

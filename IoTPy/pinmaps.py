@@ -1,4 +1,4 @@
-from errors import IoTPy_APIError
+from IoTPy.errors import IoTPy_APIError
 import collections
 from six import string_types
 

@@ -1,6 +1,6 @@
-from sfp import decode_sfp, encode_sfp
-from pinmaps import *
-from interfaces.gpio import GPIO
+from IoTPy.sfp import decode_sfp, encode_sfp
+from IoTPy.pinmaps import *
+from IoTPy.interfaces.gpio import GPIO
 
 
 class DigitalPin(object):
@@ -46,7 +46,6 @@ class SfpMachine(object):
         self.pin_id_list = []
         for pin in pin_list:
             pin_id = pin[0]
-            self.pin_id_list.append(pin_id)
             pin_caps = pin[1]
             pin_extras = pin[2]
             if pin_caps & CAP_ADC:
@@ -56,6 +55,7 @@ class SfpMachine(object):
             else:
                 secondary_function = None
             self.pin_states[pin_id] = (pin_caps, pin_extras, DigitalPin(), secondary_function)
+            self.pin_id_list.append(pin_id)
         self.sfp_comands = {}
         self.sfp_comands[1] = self.set_primary
         self.sfp_comands[2] = self.set_secondary
@@ -64,6 +64,7 @@ class SfpMachine(object):
         self.sfp_comands[5] = self.digital_read
         self.sfp_comands[6] = self.attach_interrupt
         self.sfp_comands[7] = self.detach_interrupt
+        #self.sfp_comands[9] =
         self.sfp_comands[255] = self.get_device_info
 
     def set_primary(self,arg_list):

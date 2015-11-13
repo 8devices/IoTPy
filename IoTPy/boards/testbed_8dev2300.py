@@ -1,5 +1,5 @@
-from IoTPy.ioboard.ioboard import IoBoard
-from IoTPy.ioboard.pinmaps import *
+from IoTPy.ioboard import IoBoard
+from IoTPy.pinmaps import *
 
 _8dev2300_PINOUT = IoPinout({
     'DUT_RESET':    P1_16,

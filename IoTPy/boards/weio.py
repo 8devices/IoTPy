@@ -1,5 +1,5 @@
-from IoTPy.ioboard.ioboard import IoBoard
-from IoTPy.ioboard.pinmaps import *
+from IoTPy.ioboard import IoBoard
+from IoTPy.pinmaps import *
 
 WEIO_PINOUT = IoPinout({
     0: P0_18,

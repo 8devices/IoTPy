@@ -1,7 +1,7 @@
 from time import sleep
 from IoTPy.interfaces.gpio import GPIO
 from IoTPy.boards.lpcexpresso11u14 import LPCexpresso
-from IoTPy.transport import SocketTransport
+from IoTPy.transport import SocketTransport, SerialTransport
 
 
 def button_callback(event, obj):
