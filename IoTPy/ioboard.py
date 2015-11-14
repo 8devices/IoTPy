@@ -23,18 +23,18 @@ class IoBoard:
 
     :param pinout: A list describing physical board pin layout and capabilities.
     :type pinout: :class:`IoTPy.pyuper.pinouts.IoPinout`
-    :param serial_port: Name of SFP command serial communications port.
-    :type serial_port: str
+    :param io: io transport instance (one of defined at transport.py.
+    :type io: object instance
     """
 
-    def __init__(self, pinout, io = None):
+    def __init__(self, pinout, io=None):
         self.interrupts = [None] * 8
         self.callbackdict = {}
         if not io:
             io = SerialTransport()
         self.io = io
         self.outq = queue.Queue()
-        self.reader = Reader(self.io, self.outq, self.internalCallBack, decode_sfp)
+        self.reader = Reader(self.io, self.outq, self.internal_call_back, decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
@@ -55,19 +55,18 @@ class IoBoard:
         :raise: IoTPy_APIError
         """
 
-        #for i in range(7):
+        # for i in range(7):
         #    self.detachInterrupt(i)
         self.reader.stop()
 
-
-    def lowlevel_io(self, ret, output_buf):
+    def low_level_io(self, ret, output_buf):
         """
 
         :param ret:
         :param output_buf:
         :return:
         """
-        #print(':'.join(hex(ord(n)) for n in output_buf))
+        # print(':'.join(hex(ord(n)) for n in output_buf))
         try:
             self.io.write(output_buf)
         except:
@@ -78,17 +77,17 @@ class IoBoard:
                 data = self.outq.get(True, 1)
             except queue.Empty:
                 raise IoTPy_APIError("IoTPy: Nothing to read on serial port exception.")
-            #print('|'.join(hex(ord(n)) for n in data))
+            # print('|'.join(hex(ord(n)) for n in data))
         return data
 
-    def internalCallBack(self, interrupt_data):
+    def internal_call_back(self, interrupt_data):
         """
 
         :param interrupt_data:
         :return:
         """
 
-        interrupt_event = { 'id':interrupt_data[0], 'type':interrupt_data[1] & 0xFF, 'values':interrupt_data[1] >> 8 }
+        interrupt_event = {'id': interrupt_data[0], 'type': interrupt_data[1] & 0xFF, 'values': interrupt_data[1] >> 8}
         callback_entry = self.callbackdict[self.interrupts[interrupt_event['id']]]
 
         try:
@@ -101,33 +100,34 @@ class IoBoard:
         """
         Return information about the device.
 
-        :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, microcontroller part and bootcode version numbers.
+        :return: A list containing board type, major and minor firmware versions, 16 byte unique identifier, \
+                    microcontroller part and bootcode version numbers.
         """
-        sfp_code, args = decode_sfp(self.lowlevel_io(1, encode_sfp(255, [])))
+        sfp_code, args = decode_sfp(self.low_level_io(1, encode_sfp(255, [])))
 
         if sfp_code != 255:
             errmsg("IoTPy error: get_device_info wrong code.")
-            #raise IoTPy_APIError("")
+            # raise IoTPy_APIError("")
         device_data = args
 
         if device_data[0] >> 24 != 0x55:  # 0x55 = 'U'
             print("IoTPy error: getDeviceInfo unknown device/firmware type")
-            #return
+            # return
 
         device_info = []
-        #device_info.append("UPER")  # type
-        device_info.append((device_data[0] & 0x00ff0000) >> 16) #fw major
-        device_info.append(device_data[0] & 0x0000ffff) #fw minor
-        device_info.append(device_data[1]) # 16 bytes long unique ID from UPER CPU
-        device_info.append(device_data[2]) # UPER LPC CPU part number
-        device_info.append(device_data[3]) # UPER LPC CPU bootload code version
+        # device_info.append("UPER")  # type
+        device_info.append((device_data[0] & 0x00ff0000) >> 16)     # fw major
+        device_info.append(device_data[0] & 0x0000ffff)             # fw minor
+        device_info.append(device_data[1])                          # 16 bytes long unique ID from UPER CPU
+        device_info.append(device_data[2])                          # UPER LPC CPU part number
+        device_info.append(device_data[3])                          # UPER LPC CPU bootload code version
         return device_info
 
     def reset(self):
         """
         Perform software restart.
         """
-        self.lowlevel_io(0, encode_sfp(251, []))
+        self.low_level_io(0, encode_sfp(251, []))
 
     def __enter__(self):
         return self
@@ -135,27 +135,27 @@ class IoBoard:
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
 
-    def analog(self, pin, *args, **kwargs):
+    def analog(self, pin):
         return ADC(self, pin)
 
-    def digital(self, name, *args, **kwargs):
+    def digital(self, name):
         if not (isinstance(name, int) or isinstance(name, string_types)):
             raise IoTPy_APIError("GPIO name must be an integer.")
         return GPIO(self, name)
 
-    def digital_port(self, names, *args, **kwargs):
+    def digital_port(self, names):
         for name in names:
             if not isinstance(name, int):
                 raise IoTPy_APIError("GPIO name must be an integer.")
         return GPIOPort(self, names)
 
-    def i2c(self, name, *args, **kwargs):
+    def i2c(self, name):
         return I2C(self)
 
-    def pwm(self, pin, freq=100, polarity=1, *args, **kwargs):
+    def pwm(self, pin, freq=100, polarity=1):
         return PWM(self, pin, freq, polarity)
 
-    def spi(self, name, clock=1000000, mode=SPI.MODE_0, *args, **kwargs):
+    def spi(self, name, clock=1000000, mode=SPI.MODE_0):
         _names = {"SPI0": 0, "SPI1": 1}
         if isinstance(name, int):
             port = name
@@ -210,21 +210,19 @@ class Reader:
 
                 received_data = self.io.read()
                 if not received_data:
-                    print("nuliniai duomenys")
                     break
                 data += received_data
                 data, command_list = command_slicer(data)
 
                 for sfp_command in command_list:
-                    if sfp_command[3:4] == b'\x08':               #check if it's interrupt event
+                    if sfp_command[3:4] == b'\x08':               # check if it's interrupt event
                         interrupt = self.decodefun(sfp_command)
                         with self.irq_available:
                             self.irq_requests.append(interrupt)
                             self.irq_available.notify()
                     else:
                         self.outq.put(sfp_command)
-            except IoTPy_APIError as e:
-                errmsg("UPER API: serial port reading error. %s" % e)
+            except IOError:     # absorbs IOError if reading from closed socket due to race condition
                 break
         self.alive = False
 

@@ -44,7 +44,7 @@ class GPIO(object):
             raise IoTPy_APIError("Trying to assign GPIO function to non GPIO pin.")
 
         # Configure default state to be input with pull-up resistor
-        self.board.lowlevel_io(0, encode_sfp(1, [self.logical_pin]))  # set primary
+        self.board.low_level_io(0, encode_sfp(1, [self.logical_pin]))  # set primary
         self.direction = self.INPUT
         self.resistor = self.PULL_UP
         self.setup(self.direction, self.resistor) # default GPIO pin state is INPUT and PULL_UP
@@ -86,7 +86,7 @@ class GPIO(object):
         else:
             mode = 1  # OUTPUT
 
-        self.board.lowlevel_io(0, encode_sfp(3, [self.logical_pin, mode]))
+        self.board.low_level_io(0, encode_sfp(3, [self.logical_pin, mode]))
 
     def write(self, value):
         """
@@ -97,7 +97,7 @@ class GPIO(object):
         """
         if self.direction != self.OUTPUT:
             self.setup(self.OUTPUT)
-        self.board.lowlevel_io(0, encode_sfp(4, [self.logical_pin, value]))
+        self.board.low_level_io(0, encode_sfp(4, [self.logical_pin, value]))
 
     def read(self):
         """
@@ -108,7 +108,7 @@ class GPIO(object):
         """
         if self.direction != self.INPUT:
             self.setup(self.INPUT, self.resistor)
-        return decode_sfp(self.board.lowlevel_io(1, encode_sfp(5, [self.logical_pin])))[1][1]
+        return decode_sfp(self.board.low_level_io(1, encode_sfp(5, [self.logical_pin])))[1][1]
 
     def attach_irq(self, event, callback=None, user_object=None, debounce_time=50):
         """
@@ -132,7 +132,7 @@ class GPIO(object):
         """
         try:
             irq_id = self.board.interrupts.index(self.logical_pin)
-            self.board.lowlevel_io(0, encode_sfp(7, [irq_id])) 	# detach interrupt
+            self.board.low_level_io(0, encode_sfp(7, [irq_id])) 	# detach interrupt
         except ValueError:
             try:
                 irq_id = self.board.interrupts.index(None)
@@ -141,7 +141,7 @@ class GPIO(object):
                 errmsg("UPER API: more than 8 interrupts requested")
                 raise IoTPy_APIError("Too many interrupts.")
         self.board.callbackdict[self.logical_pin] = {'mode': event, 'callback': callback, 'userobject': user_object}
-        self.board.lowlevel_io(0, encode_sfp(6, [irq_id, self.logical_pin, event, debounce_time]))
+        self.board.low_level_io(0, encode_sfp(6, [irq_id, self.logical_pin, event, debounce_time]))
         return irq_id
 
     def detach_irq(self):
@@ -159,7 +159,7 @@ class GPIO(object):
 
         self.board.interrupts[irq_id] = None
         del self.board.callbackdict[self.logical_pin]
-        self.board.lowlevel_io(0, encode_sfp(7, [irq_id]))
+        self.board.low_level_io(0, encode_sfp(7, [irq_id]))
         return True
 
     def get_irq_count(self):
@@ -172,7 +172,7 @@ class GPIO(object):
         if self.direction != self.INPUT:
             self.setup(self.INPUT, self.resistor)
 
-        return decode_sfp(self.board.lowlevel_io(1, encode_sfp(9, [self.logical_pin, level, timeout])))[1][0]
+        return decode_sfp(self.board.low_level_io(1, encode_sfp(9, [self.logical_pin, level, timeout])))[1][0]
 
 
 class GPIOPort(object):
@@ -200,7 +200,7 @@ class GPIOPort(object):
         self.direction = GPIO.INPUT
         self.resistor = GPIO.PULL_UP
         self.setup(self.direction, self.resistor)
-        self.board.lowlevel_io(0, encode_sfp(1, [self._logical_pins]))  # set primary
+        self.board.low_level_io(0, encode_sfp(1, [self._logical_pins]))  # set primary
 
     def __enter__(self):
         return self
@@ -229,7 +229,7 @@ class GPIOPort(object):
         else:
             mode = 1  # OUTPUT
 
-        self.board.lowlevel_io(0, encode_sfp(3, [self._logical_pins, chr(mode)*len(self._logical_pins)]))
+        self.board.low_level_io(0, encode_sfp(3, [self._logical_pins, chr(mode) * len(self._logical_pins)]))
 
     def write(self, value):
         """
@@ -244,7 +244,7 @@ class GPIOPort(object):
         values = list(((value >> i) & 1) for i in xrange(len(self._logical_pins)))
         values = struct.pack("B"*len(self._logical_pins), *values)
 
-        self.board.lowlevel_io(0, encode_sfp(4, [self._logical_pins, values]))
+        self.board.low_level_io(0, encode_sfp(4, [self._logical_pins, values]))
 
     def read(self):
         """
@@ -256,7 +256,7 @@ class GPIOPort(object):
         if self.direction != GPIO.INPUT:
             self.setup(GPIO.INPUT, self.resistor)
 
-        values = decode_sfp(self.board.lowlevel_io(1, encode_sfp(5, [self._logical_pins])))[1][1]
+        values = decode_sfp(self.board.low_level_io(1, encode_sfp(5, [self._logical_pins])))[1][1]
         value = 0
         for i, bit in enumerate(values):
             value |= (ord(bit) & 0x1) << i

@@ -49,5 +49,3 @@ while True:
     sleep(1)
     conn.close()
     print("Closing connection.")
-
-

@@ -64,10 +64,10 @@ class SfpMachine(object):
         self.sfp_comands[5] = self.digital_read
         self.sfp_comands[6] = self.attach_interrupt
         self.sfp_comands[7] = self.detach_interrupt
-        #self.sfp_comands[9] =
+        # self.sfp_comands[9] =
         self.sfp_comands[255] = self.get_device_info
 
-    def set_primary(self,arg_list):
+    def set_primary(self, arg_list):
         pin_id = arg_list[0]
         if pin_id in self.pin_id_list:
             self.pin_states[pin_id][2].set_primary()
@@ -101,7 +101,7 @@ class SfpMachine(object):
         pass
 
     def get_device_info(self, arg_list):
-        return 44,0,44,0
+        return 44, 0, 44, 0
 
     def execute_sfp(self, binary_sfp_command):
         decoded_sfp_command = decode_sfp(binary_sfp_command)

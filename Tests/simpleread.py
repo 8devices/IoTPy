@@ -1,7 +1,7 @@
 from IoTPy.boards.lpcexpresso11u14 import LPCexpresso
 from IoTPy.transport import SocketTransport
 from IoTPy.interfaces.gpio import GPIO
-from time import time
+from time import time,sleep
 
 with LPCexpresso(SocketTransport()) as board, board.digital('P0_23') as pin:
     pin.setup(GPIO.INPUT)
@@ -11,7 +11,7 @@ with LPCexpresso(SocketTransport()) as board, board.digital('P0_23') as pin:
     print(pin.read())
     pin.write(1)
     start = time()
-    for i in range(10000):
+    for i in range(1000):
         pin.read()
     for i in range(10000):
         pin.write(1)
@@ -19,3 +19,6 @@ with LPCexpresso(SocketTransport()) as board, board.digital('P0_23') as pin:
     print("elapsed time (s) %f" % (end - start))
     print(pin.read())
     print(board.get_device_info())
+    pin.write(0)
+    sleep(0.6)
+
