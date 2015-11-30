@@ -1,5 +1,6 @@
 import socket
 from IoTPy.detect_sfp_serial import detect_sfp_serial
+from IoTPy.errors import IoTPy_IOError
 
 
 class SocketTransport(object):
@@ -35,9 +36,8 @@ class SerialTransport(object):
             if n:
                 data = data + self.serial_port.read(n)   # and get as much as possible
             return data
-        except(Exception):
-            pass
-#            print("Pyksht", e)
+        except IOError:
+            IoTPy_IOError("Serial port IO error.")
             return None
 
     def write(self, data):
