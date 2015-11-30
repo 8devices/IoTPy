@@ -10,7 +10,7 @@ if ioBoardType == _UPER1:
     from IoTPy.boards.uper import UPER1 as ioBoard
     LED_PIN_ID = 27
 if ioBoardType == _LPCexpresso:
-    from IoTPy.boards.lpcexpresso11u14 import LPCexpresso as ioBoard
+    from IoTPy.boards.metis import LPCexpresso as ioBoard
     LED_PIN_ID = 'P0_7'
 
 # This is platform dependent - please configure to your application

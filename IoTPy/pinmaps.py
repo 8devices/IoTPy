@@ -19,6 +19,7 @@ CAP_ADC      = 0x2
 CAP_PWM      = 0x4
 CAP_SPI      = 0x8
 CAP_UART     = 0x10
+CAP_I2C      = 0x20
 
 """
 named tuple Pin for storing pinID, capabilities and extra info such us PWM bank or ADC pin no and similar.
@@ -43,38 +44,41 @@ class IoPinout(dict):
 
 P0_20   = Pin(0)
 P0_2    = Pin(1)
-P1_26   = Pin(2, CAP_GPIO | CAP_PWM, [1,2]) #PWM1_2
+P1_26   = Pin(2, CAP_GPIO | CAP_PWM, [1,2])  # PWM1_2
 P1_27   = Pin(3)
-P1_20   = Pin(4, CAP_GPIO | CAP_SPI, [1,2]) #SPI1 SCK
-P0_21   = Pin(5, CAP_GPIO | CAP_SPI, [1,1]) #SPI1 MOSI
+P1_20   = Pin(4, CAP_GPIO | CAP_SPI, [1,2])  # SPI1 SCK
+P0_21   = Pin(5, CAP_GPIO | CAP_SPI, [1,1])  # SPI1 MOSI
 P1_23   = Pin(6)
-P1_24   = Pin(7, CAP_GPIO | CAP_PWM, [1,0]) #PWM1_0
+P1_24   = Pin(7, CAP_GPIO | CAP_PWM, [1,0])  # PWM1_0
 P0_7    = Pin(8)
 P1_28   = Pin(9)
 P1_31   = Pin(10)
-P1_21   = Pin(11, CAP_GPIO | CAP_SPI, [1,0]) #SPI1 MISO
-P0_8    = Pin(12, CAP_GPIO | CAP_SPI, [0,0]) #SPI0 MISO
-P0_9    = Pin(13, CAP_GPIO | CAP_SPI, [0,1]) #SPI0 MOSI
-P0_10   = Pin(14, CAP_GPIO | CAP_SPI, [0,2]) #SPI0 SCK
+P1_21   = Pin(11, CAP_GPIO | CAP_SPI, [1,0])  # SPI1 MISO
+P0_8    = Pin(12, CAP_GPIO | CAP_SPI, [0,0])  # SPI0 MISO
+P0_9    = Pin(13, CAP_GPIO | CAP_SPI, [0,1])  # SPI0 MOSI
+P0_10   = Pin(14, CAP_GPIO | CAP_SPI, [0,2])  # SPI0 SCK
 P1_29   = Pin(15)
 P1_19   = Pin(16)
-P1_25   = Pin(17, CAP_GPIO | CAP_PWM, [1,1]) #PWM1_1
+P1_25   = Pin(17, CAP_GPIO | CAP_PWM, [1,1])  # PWM1_1
 P1_16   = Pin(18)
-P0_19   = Pin(19, CAP_GPIO | CAP_UART, [0])  #UART TX
-P0_18   = Pin(20, CAP_GPIO | CAP_UART, [1])  #UART RX
+P0_19   = Pin(19, CAP_GPIO | CAP_UART, [0])   # UART TX
+P0_18   = Pin(20, CAP_GPIO | CAP_UART, [1])   # UART RX
 P0_17   = Pin(21)
-P1_15   = Pin(22, CAP_GPIO | CAP_PWM, [0,2]) #PWM0_2
-P0_23   = Pin(23, CAP_GPIO | CAP_ADC, [7])   #ADC7
-P0_22   = Pin(24, CAP_GPIO | CAP_ADC, [6])   #ADC6
-P0_16   = Pin(25, CAP_GPIO | CAP_ADC, [5])   #ADC5
-P0_15   = Pin(26, CAP_GPIO | CAP_ADC, [4])   #ADC4
+P1_15   = Pin(22, CAP_GPIO | CAP_PWM, [0,2])  # PWM0_2
+P0_23   = Pin(23, CAP_GPIO | CAP_ADC, [7])    # ADC7
+P0_22   = Pin(24, CAP_GPIO | CAP_ADC, [6])    # ADC6
+P0_16   = Pin(25, CAP_GPIO | CAP_ADC, [5])    # ADC5
+P0_15   = Pin(26, CAP_GPIO | CAP_ADC, [4])    # ADC4
 P1_22   = Pin(27)
-P1_14   = Pin(28, CAP_GPIO | CAP_PWM, [0,1]) #PWM0_1
-P1_13   = Pin(29, CAP_GPIO | CAP_PWM, [0,0]) #PWM0_0
-P0_14   = Pin(30, CAP_GPIO | CAP_ADC, [3])   #ADC3
-P0_13   = Pin(31, CAP_GPIO | CAP_ADC, [2])   #ADC2
-P0_12   = Pin(32, CAP_GPIO | CAP_ADC, [1])   #ADC1
-P0_11   = Pin(33, CAP_GPIO | CAP_ADC, [2])   #ADC0
+P1_14   = Pin(28, CAP_GPIO | CAP_PWM, [0,1])  # PWM0_1
+P1_13   = Pin(29, CAP_GPIO | CAP_PWM, [0,0])  # PWM0_0
+P0_14   = Pin(30, CAP_GPIO | CAP_ADC, [3])    # ADC3
+P0_13   = Pin(31, CAP_GPIO | CAP_ADC, [2])    # ADC2
+P0_12   = Pin(32, CAP_GPIO | CAP_ADC, [1])    # ADC1
+P0_11   = Pin(33, CAP_GPIO | CAP_ADC, [2])    # ADC0
+P0_4    = Pin(34, CAP_GPIO | CAP_I2C, [0,0])  # I2C_SCL
+P0_5    = Pin(35, CAP_GPIO | CAP_I2C, [0,1])  # I2C_SDA
+P0_1    = Pin(36)
 
 P_GND   = Pin(-1, CAP_RESERVED)
 P_5V    = Pin(-1, CAP_RESERVED)
@@ -88,6 +92,8 @@ pin_list = [
     P1_15, P0_23, P0_22, P0_16, P0_15, P1_22, P1_14, P1_13, P0_14, P0_13,
     P0_12, P0_11
     ]
+
+
 
 
 

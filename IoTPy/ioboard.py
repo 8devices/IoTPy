@@ -13,6 +13,7 @@ from IoTPy.interfaces.i2c import I2C
 from IoTPy.sfp import encode_sfp, decode_sfp, command_slicer
 from IoTPy.transport import SerialTransport
 from IoTPy.errors import errmsg, IoTPy_APIError
+from time import time
 
 __version__ = '0.01'
 
@@ -34,7 +35,7 @@ class IoBoard:
             io = SerialTransport()
         self.io = io
         self.outq = queue.Queue()
-        self.reader = Reader(self.io, self.outq, self.internal_call_back, decode_sfp)
+        self.reader = Worker(self.io, self.outq, self.internal_call_back, decode_sfp)
 
         self.devicename = "uper"
         self.version = __version__
@@ -172,7 +173,7 @@ class IoBoard:
         return SPI(self, port, divider, mode)
 
 
-class Reader:
+class Worker:
     def __init__(self, io, outq, callback, decodefun):
         self.io = io
         self.outq = outq
@@ -186,7 +187,6 @@ class Reader:
         self.thread_irq.start()
 
         self.thread_read = threading.Thread(target=self.reader)
-        self.thread_read.setDaemon(1)
         self.thread_read.start()
         self.decodefun = decodefun
 
@@ -207,7 +207,6 @@ class Reader:
         data = b''
         while self.alive:
             try:
-
                 received_data = self.io.read()
                 if not received_data:
                     break

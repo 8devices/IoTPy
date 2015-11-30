@@ -2,6 +2,11 @@ from IoTPy.sfp import decode_sfp, encode_sfp
 from IoTPy.pinmaps import *
 from IoTPy.interfaces.gpio import GPIO
 
+"""
+0 byte - ADC, 0 - no adc,
+
+b'11111111
+"""
 
 class DigitalPin(object):
     def __init__(self, mode=GPIO.PULL_UP, value=GPIO.LOW, primary=True):

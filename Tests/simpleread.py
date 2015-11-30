@@ -1,4 +1,4 @@
-from IoTPy.boards.lpcexpresso11u14 import LPCexpresso
+from IoTPy.boards.metis import LPCexpresso
 from IoTPy.transport import SocketTransport
 from IoTPy.interfaces.gpio import GPIO
 from time import time,sleep
