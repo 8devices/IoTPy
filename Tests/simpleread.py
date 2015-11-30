@@ -2,8 +2,8 @@ from IoTPy.boards.metis import LPCexpresso
 from IoTPy.transport import SocketTransport
 from IoTPy.interfaces.gpio import GPIO
 from time import time,sleep
-
-with LPCexpresso(SocketTransport()) as board, board.digital('P0_23') as pin:
+io = SocketTransport()
+with LPCexpresso(io) as board, board.digital('P0_23') as pin:
     pin.setup(GPIO.INPUT)
     pin.write(1)
     print(pin.read())

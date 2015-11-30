@@ -3,10 +3,11 @@ from IoTPy.detect_sfp_serial import detect_sfp_serial
 
 
 class SocketTransport(object):
-    def __init__(self, host='', port=7777):
+    def __init__(self, host='127.0.0.1', port=7777):
         self.host = host
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print(self.host, self.port)
         self.socket.connect((self.host, self.port))
 
     def read(self):
@@ -34,7 +35,7 @@ class SerialTransport(object):
             if n:
                 data = data + self.serial_port.read(n)   # and get as much as possible
             return data
-        except Exception,e:
+        except(Exception):
             pass
 #            print("Pyksht", e)
             return None

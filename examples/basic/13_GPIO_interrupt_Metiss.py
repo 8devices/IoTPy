@@ -1,4 +1,5 @@
-from signal import pause
+import signal
+from time import sleep
 from IoTPy.interfaces.gpio import GPIO
 from IoTPy.boards.metis import Metis
 from IoTPy.transport import SocketTransport, SerialTransport
@@ -17,4 +18,9 @@ with Metis(io) as board, board.digital('D16') as led, board.digital('D18') as bu
     button_pin.attach_irq(GPIO.CHANGE, button_callback, my_object)
     led.write(1)
 
-    pause()
+    try:
+        signal.pause()
+    except AttributeError:
+        # signal.pause() is missing for Windows, loop instead
+        while True:
+            sleep(1)
