@@ -20,7 +20,7 @@ class PWM(object):
     :type polarity: int
     """
 
-    _PWM_PORT_FUNCTIONS = [[50, 51, 52], [60, 61, 62]]
+    _PWM_PORT_FUNCTIONS = [[50,51,52],[60,61,62]]
     _PWM_PORT_MAX = [0xffff, 0xffffffff]
 
     def __init__(self, board, pin, freq=100, polarity=1):

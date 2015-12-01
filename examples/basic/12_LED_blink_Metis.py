@@ -4,7 +4,7 @@ from IoTPy.interfaces.gpio import GPIO
 from IoTPy.transport import SerialTransport, SocketTransport
 
 # This is platform dependent - please configure to your application
-LED_PIN_ID = 'D16'
+LED_PIN_ID = 'D4'
 io = SerialTransport()
 with Metis(io) as board, board.digital(LED_PIN_ID) as ledPin:
     ledPin.setup(GPIO.OUTPUT)  # set digital pin to be output
