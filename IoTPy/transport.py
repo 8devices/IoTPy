@@ -30,11 +30,14 @@ class SerialTransport(object):
         self.serial_port.setTimeout(None)
 
     def read(self):
-        data = self.serial_port.read(1)              # read one, blocking
-        n = self.serial_port.inWaiting()             # look if there is more
-        if n:
-            data = data + self.serial_port.read(n)   # and get as much as possible
-        return data
+        try:
+            data = self.serial_port.read(1)              # read one, blocking
+            n = self.serial_port.inWaiting()             # look if there is more
+            if n:
+                data = data + self.serial_port.read(n)   # and get as much as possible
+            return data
+        except IOError:
+            return None
 
     def write(self, data):
         self.serial_port.write(data)

@@ -192,14 +192,13 @@ class Worker:
     def interrupt_handler(self):
         with self.irq_available:
             while self.alive:
-                self.irq_available.wait()
+                self.irq_available.wait(0.05)
                 while len(self.irq_requests):
                     interrupt = self.irq_requests.pop(0)
                     try:
                         self.callback(interrupt[1])
                     except Exception as e:
                         errmsg("IoTPy: Interrupt callback error (%s)" % e)
-        die("Nusibaige irq handleris")
         self.alive = False
 
     def reader(self):
@@ -222,13 +221,10 @@ class Worker:
                         self.outq.put(sfp_command)
             except IOError as e:     # absorbs IOError if reading from closed socket due to race condition
                 print("Absorb %s" % e)
+                #raise e
                 break
-
-        self.thread_irq.alive = False
-
+        print("KILLLLLL")
         os.kill(os.getpid(), signal.SIGTERM)
-        #        self.irq_available.notify()
-        die("Nusibaige read")
         self.alive = False
 
     def stop(self):
