@@ -5,6 +5,7 @@ HIGH =1
 LSBFIRST = 1
 MSBFIRST = 0
 
+
 class SHT1X:
     """
     SHT10, SHT11 and SHT15 humidity and temperature sensor class.
@@ -26,7 +27,7 @@ class SHT1X:
         pass
 
     def _shift_out(self, bit_order, byte, bits):
-        for i in xrange(bits):
+        for i in range(bits):
             if bit_order == LSBFIRST:
                 self.data_pin.write(byte & (1 << i))
             else:
@@ -57,7 +58,7 @@ class SHT1X:
 
     def _shift_in(self, bits):
         ret = 0
-        for i in xrange(bits):
+        for i in range(bits):
             self.clk_pin.write(HIGH)
             sleep(0.01)
             ret = (ret << 1) + self.data_pin.read()
@@ -65,7 +66,7 @@ class SHT1X:
         return ret
 
     def _wait_sht(self):
-        for i in xrange(100):
+        for i in range(100):
             sleep(0.002)
             ack = self.data_pin.read()
             if ack == LOW:
@@ -118,11 +119,11 @@ class SHT1X:
         T1 =  0.01      # for 14 Bit @ 5V
         T2 =  0.00008   # for 14 Bit @ 5V
         """
-        C1 = -2.0468       # for 12 Bit
-        C2 =  0.0367    # for 12 Bit
-        C3 = -0.0000015955 # for 12 Bit
-        T1 =  0.01      # for 14 Bit @ 5V
-        T2 =  0.00008   # for 14 Bit @ 5V
+        C1 = -2.0468        # for 12 Bit
+        C2 = 0.0367         # for 12 Bit
+        C3 = -0.0000015955  # for 12 Bit
+        T1 = 0.01           # for 14 Bit @ 5V
+        T2 = 0.00008        # for 14 Bit @ 5V
 
         self._sht_command(0x05)
         self._wait_sht()

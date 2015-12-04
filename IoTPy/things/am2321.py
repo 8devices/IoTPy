@@ -1,16 +1,16 @@
 from time import sleep
 from struct import unpack
 
-from IoTPy.ioboard.errors import IoTPy_ThingError
+from IoTPy.errors import IoTPy_ThingError
 
 
 I2C_ADDR_AM2321 = 0x5c # 0xB8 >> 1
-PARAM_AM2321_READ = '\x03'
-REG_AM2321_HUMIDITY_MSB = '\x00'
-REG_AM2321_HUMIDITY_LSB = '\x01'
-REG_AM2321_TEMPERATURE_MSB = '\x02'
-REG_AM2321_TEMPERATURE_LSB = '\x03'
-REG_AM2321_DEVICE_ID_BIT_24_31 = '\x0B'
+PARAM_AM2321_READ = b'\x03'
+REG_AM2321_HUMIDITY_MSB = b'\x00'
+REG_AM2321_HUMIDITY_LSB = b'\x01'
+REG_AM2321_TEMPERATURE_MSB = b'\x02'
+REG_AM2321_TEMPERATURE_LSB = b'\x03'
+REG_AM2321_DEVICE_ID_BIT_24_31 = b'\x0B'
 
 class AM2321:
     """
@@ -35,10 +35,10 @@ class AM2321:
         pass
 
     def _read_raw(self, command, regaddr, regcount):
-        self.interface.transaction(self.address, '\0', 0)
-        self.interface.transaction(self.address, command+regaddr+chr(regcount), 0)
+        self.interface.transaction(self.address, b'\0', 0)
+        self.interface.transaction(self.address, command+regaddr+chr(regcount).encode('latin-1'), 0)
         sleep(0.002)
-        buf, err = self.interface.transaction(self.address, '', regcount + 4)
+        buf, err = self.interface.transaction(self.address, b'', regcount + 4)
 
         if err:
             raise IoTPy_ThingError("AM2321 reading error.")
@@ -52,8 +52,8 @@ class AM2321:
     def _am_crc16(self, buf):
         crc = 0xFFFF
         for c in buf:
-            crc ^= ord(c)
-            for i in xrange(8):
+            crc ^= c
+            for i in range(8):
                 if crc & 0x01:
                     crc >>= 1
                     crc ^= 0xA001

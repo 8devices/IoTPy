@@ -15,6 +15,8 @@ class I2C(object):
     def __init__(self, board, port=0):
         self.board = board
         self.port = port
+        self.board.low_level_io(0, encode_sfp(2, [34]))
+        self.board.low_level_io(0, encode_sfp(2, [35]))
         self.board.low_level_io(0, encode_sfp(40, []))
 
     def __enter__(self):
@@ -31,9 +33,9 @@ class I2C(object):
         :rtype: list
         """
         dev_list = []
-        for address in xrange(1, 128):
+        for address in range(1, 128):
             try:
-                result = self.board.low_level_io(1, encode_sfp(41, [address, '', 0]))
+                result = self.board.low_level_io(1, encode_sfp(41, [address, b'', 0]))
                 if result[-1] == 'X':
                     dev_list.append(address)
             except IoTPy_APIError:
@@ -42,7 +44,7 @@ class I2C(object):
         return dev_list
 
     def read(self, address, count):
-        return self.transaction(address, "", count)
+        return self.transaction(address, b'', count)
 
     def write(self, address, data):
         return self.transaction(address, data, 0)

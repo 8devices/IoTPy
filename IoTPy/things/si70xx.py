@@ -1,28 +1,28 @@
 from struct import unpack
-from IoTPy.ioboard.errors import IoTPy_ThingError
+from IoTPy.errors import IoTPy_ThingError
 
 
-SI70xx_CMD_RH_HOLD      = '\xE5'  # RH hold master mode
-SI70xx_CMD_RH_NOHOLD    = '\xF5'  # RH no hold master mode
-SI70xx_CMD_TEMP_HOLD    = '\xE3'  # temp hold master mode
-SI70xx_CMD_TEMP_NOHOLD  = '\xF3'  # temp no hold master mode
-SI70xx_CMD_ANALOG       = '\xEE'  #
-SI70xx_CMD_TEMP_PREVIOUS= '\xE0'  # temp from previous measurement
+SI70xx_CMD_RH_HOLD      = b'\xE5'  # RH hold master mode
+SI70xx_CMD_RH_NOHOLD    = b'\xF5'  # RH no hold master mode
+SI70xx_CMD_TEMP_HOLD    = b'\xE3'  # temp hold master mode
+SI70xx_CMD_TEMP_NOHOLD  = b'\xF3'  # temp no hold master mode
+SI70xx_CMD_ANALOG       = b'\xEE'  #
+SI70xx_CMD_TEMP_PREVIOUS= b'\xE0'  # temp from previous measurement
 
-SI70xx_CMD_RESET        = '\xFE'  # reset
+SI70xx_CMD_RESET        = b'\xFE'  # reset
 
-SI70xx_CMD_WRITE_REG1   = '\xE6'  # write user register 1 (RH/T setup)
-SI70xx_CMD_READ_REG1    = '\xE7'  # read user register 1 (RH/T setup)
-SI70xx_CMD_WRITE_REG2   = '\x50'  # write user register 2 (Analog setup)
-SI70xx_CMD_READ_REG2    = '\x10'  # read user register 2 (Analog setup)
-SI70xx_CMD_WRITE_REG3   = '\x51'  # write user register 3 (Heater setup)
-SI70xx_CMD_READ_REG3    = '\x11'  # read user register 3 (Heater setup)
-SI70xx_CMD_WRITE_TCC    = '\xC5'  # write thermistor correction coefficient
-SI70xx_CMD_READ_TCC     = '\x84'  # read thermistor correction coefficient
+SI70xx_CMD_WRITE_REG1   = b'\xE6'  # write user register 1 (RH/T setup)
+SI70xx_CMD_READ_REG1    = b'\xE7'  # read user register 1 (RH/T setup)
+SI70xx_CMD_WRITE_REG2   = b'\x50'  # write user register 2 (Analog setup)
+SI70xx_CMD_READ_REG2    = b'\x10'  # read user register 2 (Analog setup)
+SI70xx_CMD_WRITE_REG3   = b'\x51'  # write user register 3 (Heater setup)
+SI70xx_CMD_READ_REG3    = b'\x11'  # read user register 3 (Heater setup)
+SI70xx_CMD_WRITE_TCC    = b'\xC5'  # write thermistor correction coefficient
+SI70xx_CMD_READ_TCC     = b'\x84'  # read thermistor correction coefficient
 
-SI70xx_CMD_READ_ID1     = '\xFA\x0F'  # read ID 1st byte
-SI70xx_CMD_READ_ID2     = '\xFC\xC9'  # read ID 2nd byte
-SI70xx_CMD_FW_REVISION  = '\x84\xB8'  # get firmware revision
+SI70xx_CMD_READ_ID1     = b'\xFA\x0F'  # read ID 1st byte
+SI70xx_CMD_READ_ID2     = b'\xFC\xC9'  # read ID 2nd byte
+SI70xx_CMD_FW_REVISION  = b'\x84\xB8'  # get firmware revision
 
 
 class Si7013:
