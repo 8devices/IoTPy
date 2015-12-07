@@ -1,5 +1,5 @@
 from IoTPy.errors import IoTPy_APIError
-from builtins import chr
+#from builtins import chr
 from six import binary_type, integer_types
 from struct import pack, unpack
 
@@ -39,7 +39,7 @@ def encode_sfp(command, args):
         integer_types[0]: _encode_int   # [0] - kinda hack to get class int
     }
 
-    sfp_command = chr(command).encode('latin-1') + b''.join(functions[type(arg)](arg) for arg in args)
+    sfp_command = pack('B', command) + b''.join(functions[type(arg)](arg) for arg in args)
     sfp_command = b'\xd4' + pack('>H', len(sfp_command)) + sfp_command
     return sfp_command
 

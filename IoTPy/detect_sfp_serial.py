@@ -26,13 +26,14 @@ def detect_sfp_serial():
         try:
             port_to_try = serial.Serial(
                 port=my_port,
-                baudrate=230400,  #virtual com port on USB is always max speed
+                baudrate=230400,  # virtual com port on USB is always max speed
                 parity=serial.PARITY_ODD,
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS,
-                timeout=0.1
+                timeout=1
             )
-            port_to_try.write(encode_sfp(255, []))
+            komanda_siuntimui = encode_sfp(255, [])
+            port_to_try.write(komanda_siuntimui)
             response = port_to_try.read(1)    # read one, blocking
             n = port_to_try.inWaiting()        # look if there is more
             if n:

@@ -2,7 +2,11 @@
 # encoding: utf-8
 import threading, os, signal
 
-import queue
+try:
+    import queue
+except ImportError:
+    import Queue as queue
+
 from IoTPy.interfaces.adc import ADC
 from IoTPy.interfaces.gpio import GPIO, GPIOPort
 from IoTPy.interfaces.pwm import PWM
@@ -70,13 +74,13 @@ class IoBoard:
         try:
             self.io.write(output_buf)
         except:
-            raise IoTPy_APIError("Unrecoverable serial port writing error, dying.")
+            raise IoTPy_APIError("Unrecoverable transport writing error, dying.")
         data = None
         if ret != 0:
             try:
                 data = self.outq.get(True, 1)
             except queue.Empty:
-                raise IoTPy_APIError("IoTPy: Nothing to read on serial port exception.")
+                raise IoTPy_APIError("IoTPy: Nothing to read on port exception.")
             # print('|'.join(hex(ord(n)) for n in data))
         return data
 
