@@ -50,6 +50,6 @@ def detect_sfp_serial(uid=None):
 
             port_to_try.close()
         except:
-            raise IoTPy_APIError("Unrecoverable serial port error.")
+            pass
 
     raise IoTPy_APIError("No SFP device was found on serial ports.")

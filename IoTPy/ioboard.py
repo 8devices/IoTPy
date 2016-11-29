@@ -230,8 +230,8 @@ class Worker:
                 print("Absorb %s" % e)
                 #raise e
                 break
-        print("KILLLLLL")
-        os.kill(os.getpid(), signal.SIGTERM)
+        # print("KILLLLLL")
+        # os.kill(os.getpid(), signal.SIGTERM)
         self.alive = False
 
     def stop(self):
