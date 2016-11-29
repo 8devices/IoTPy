@@ -23,10 +23,10 @@ class SocketTransport(object):
 
 
 class SerialTransport(object):
-    def __init__(self, serial_port=None):
+    def __init__(self, serial_port=None, uid=None):
         self.serial_port = serial_port
         if not self.serial_port:
-            self.serial_port = detect_sfp_serial()
+            self.serial_port = detect_sfp_serial(uid)
         self.serial_port.setTimeout(None)
 
     def read(self):

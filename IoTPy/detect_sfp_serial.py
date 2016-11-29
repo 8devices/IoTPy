@@ -3,18 +3,21 @@ import glob
 import serial
 from IoTPy.sfp import encode_sfp, decode_sfp
 from IoTPy.errors import IoTPy_APIError
+from uuid import UUID
 
 
-def detect_sfp_serial():
+def detect_sfp_serial(uid=None):
     ports_list = []
-    serial_port = False
     my_platform = platform.system()
+    if uid:
+        uid = UUID(uid)
+
     if my_platform == "Windows":
         for i in range(256):
             try:
-                serial_port = serial.Serial('COM'+str(i))
-                ports_list.append(serial_port.portstr)
-                serial_port.close()
+                serial_tmp = serial.Serial('COM'+str(i))
+                ports_list.append(serial_tmp.portstr)
+                serial_tmp.close()
             except serial.SerialException:
                 pass
     elif my_platform == "Darwin":
@@ -38,13 +41,15 @@ def detect_sfp_serial():
             n = port_to_try.inWaiting()        # look if there is more
             if n:
                 response = response + port_to_try.read(n)
-                if decode_sfp(response)[0] == 255:  # found port with UPER
-                    serial_port = port_to_try
-                    break
+                sfp = decode_sfp(response)
+
+                if sfp[0] == 255:  # device info sfp packet
+                    dev_uid = UUID(bytes=sfp[1][1])
+                    if not uid or uid == dev_uid:
+                        return port_to_try
+
             port_to_try.close()
         except:
             raise IoTPy_APIError("Unrecoverable serial port error.")
 
-    if not serial_port:
-        raise IoTPy_APIError("No SFP device was found on serial ports.")
-    return serial_port
+    raise IoTPy_APIError("No SFP device was found on serial ports.")

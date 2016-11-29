@@ -18,6 +18,8 @@ from IoTPy.sfp import encode_sfp, decode_sfp, command_slicer
 from IoTPy.transport import SerialTransport
 from IoTPy.errors import errmsg, IoTPy_APIError, die
 
+from uuid import UUID
+
 __version__ = '0.01'
 
 
@@ -31,11 +33,11 @@ class IoBoard:
     :type io: object instance
     """
 
-    def __init__(self, pinout, io=None):
+    def __init__(self, pinout, io=None, **kwargs):
         self.interrupts = [None] * 8
         self.callbackdict = {}
         if not io:
-            io = SerialTransport()
+            io = SerialTransport(**kwargs)
         self.io = io
         self.outq = queue.Queue()
         self.reader = Worker(self.io, self.outq, self.internal_call_back, decode_sfp)
@@ -118,13 +120,14 @@ class IoBoard:
             print("IoTPy error: getDeviceInfo unknown device/firmware type")
             # return
 
-        device_info = []
-        # device_info.append("UPER")  # type
-        device_info.append((device_data[0] & 0x00ff0000) >> 16)     # fw major
-        device_info.append(device_data[0] & 0x0000ffff)             # fw minor
-        device_info.append(device_data[1])                          # 16 bytes long unique ID from UPER CPU
-        device_info.append(device_data[2])                          # UPER LPC CPU part number
-        device_info.append(device_data[3])                          # UPER LPC CPU bootload code version
+        device_info = {
+            'fw_maj': (device_data[0] & 0x00ff0000) >> 16,  # Firmware major version number
+            'fw_min': device_data[0] & 0x0000ffff,          # Firmware minor version number
+            'uid':    UUID(bytes=device_data[1]),         # 128bit unique ID
+            'cpu_id': device_data[2],                       # UPER LPC CPU part number
+            'boot':   device_data[3],                       # UPER LPC CPU bootload code version
+        }
+
         return device_info
 
     def reset(self):

@@ -31,5 +31,5 @@ METIS_PINOUT = IoPinout({
 
 class Metis(IoBoard):
 
-    def __init__(self, io=None):
-        IoBoard.__init__(self, METIS_PINOUT, io)
+    def __init__(self, io=None, **kwargs):
+        IoBoard.__init__(self, METIS_PINOUT, io, **kwargs)
