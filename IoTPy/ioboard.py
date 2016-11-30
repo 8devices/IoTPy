@@ -9,6 +9,7 @@ except ImportError:
 
 from IoTPy.interfaces.adc import ADC
 from IoTPy.interfaces.gpio import GPIO, GPIOPort
+from IoTPy.interfaces.onewire import OneWire
 from IoTPy.interfaces.pwm import PWM
 from IoTPy.interfaces.spi import SPI
 from six import string_types
@@ -177,6 +178,9 @@ class IoBoard:
         divider = int(round(2.0e6/clock))
 
         return SPI(self, port, divider, mode)
+
+    def onewire(self, pin):
+        return OneWire(self, pin)
 
 
 class Worker:
