@@ -27,7 +27,7 @@ class SerialTransport(object):
         self.serial_port = serial_port
         if not self.serial_port:
             self.serial_port = detect_sfp_serial(uid)
-        self.serial_port.setTimeout(None)
+        self.serial_port.timeout = None
 
     def read(self):
         try:
