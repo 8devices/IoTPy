@@ -218,7 +218,7 @@ class Worker:
             try:
                 received_data = self.io.read()
                 if not received_data:
-                    break
+                    continue
                 data += received_data
                 data, command_list = command_slicer(data)
 

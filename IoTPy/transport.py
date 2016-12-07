@@ -27,7 +27,6 @@ class SerialTransport(object):
         self.serial_port = serial_port
         if not self.serial_port:
             self.serial_port = detect_sfp_serial(uid)
-        self.serial_port.timeout = None
 
     def read(self):
         try:
@@ -37,7 +36,11 @@ class SerialTransport(object):
                 data = data + self.serial_port.read(n)   # and get as much as possible
             return data
         except IOError:
-            return None
+            pass
+        except TypeError:
+            pass
+
+        return None
 
     def write(self, data):
         self.serial_port.write(data)
